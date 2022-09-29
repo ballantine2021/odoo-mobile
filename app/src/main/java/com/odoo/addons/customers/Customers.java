@@ -101,12 +101,12 @@ public class Customers extends BaseFragment implements ISyncStatusObserverListen
     @Override
     public void onViewBind(View view, Cursor cursor, ODataRow row) {
         Bitmap img;
-        if (row.getString("image_small").equals("false")) {
+        if (row.getString("image_128").equals("false")) {
             img = BitmapUtils.getAlphabetImage(getActivity(), row.getString("name"));
         } else {
-            img = BitmapUtils.getBitmapImage(getActivity(), row.getString("image_small"));
+            img = BitmapUtils.getBitmapImage(getActivity(), row.getString("image_128"));
         }
-        OControls.setImage(view, R.id.image_small, img);
+        OControls.setImage(view, R.id.image_128, img);
         OControls.setText(view, R.id.name, row.getString("name"));
         OControls.setText(view, R.id.company_name, (row.getString("company_name").equals("false"))
                 ? "" : row.getString("company_name"));
@@ -120,10 +120,10 @@ public class Customers extends BaseFragment implements ISyncStatusObserverListen
         List<String> args = new ArrayList<>();
         switch (mType) {
             case Customer:
-                where = "customer = ?";
+                where = "is_customer = ?";
                 break;
             case Supplier:
-                where = "supplier = ?";
+                where = "is_supplier = ?";
                 break;
             case Company:
                 where = "is_company = ?";

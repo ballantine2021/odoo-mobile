@@ -93,7 +93,7 @@ public class MailMessage extends OModel {
         ODataRow row = browse(new String[]{"author_id"}, row_id);
         if (row.getInt("author_id") != 0) {
             ODataRow author_id = row.getM2ORecord("author_id").browse();
-            return author_id.getString("image_small");
+            return author_id.getString("image_128");
         }
         return "false";
     }

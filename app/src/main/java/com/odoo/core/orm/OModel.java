@@ -216,7 +216,8 @@ public class OModel implements ISyncServiceListener {
                 column = (OColumn) field.get(this);
                 if (column.getName() == null)
                     column.setName(field.getName());
-                Boolean validField = compatibleField(field);
+//                Boolean validField = compatibleField(field);
+                Boolean validField = true;
                 if (validField) {
                     // Functional Method
                     Method method = checkForFunctionalColumn(field);

@@ -193,12 +193,12 @@ public class OdooWrapper<T> implements Response.Listener<JSONObject> {
                     }
                 }
             };
-            JsonObjectRequest request = new JsonObjectRequest(url, postData, OdooWrapper.this, errorListener);
+            JsonObjectRequest request = new OdooJSONRequest(url, postData, OdooWrapper.this, errorListener);
             request.setRetryPolicy(new DefaultRetryPolicy(new_request_timeout, new_request_max_retry,
                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             requestQueue.add(request);
         } else {
-            JsonObjectRequest request = new JsonObjectRequest(url, postData, requestFuture, requestFuture);
+            JsonObjectRequest request = new OdooJSONRequest(url, postData, requestFuture, requestFuture);
             request.setRetryPolicy(new DefaultRetryPolicy(new_request_timeout, new_request_max_retry,
                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             requestQueue.add(request);
@@ -914,7 +914,7 @@ public class OdooWrapper<T> implements Response.Listener<JSONObject> {
         users[0].setCompanyId(odooSession.getCompanyId());
         users[0].setHost(serverURL);
         OdooFields fields = new OdooFields();
-        fields.addAll(new String[]{"name", "partner_id", "tz", "image_medium", "company_id"});
+        fields.addAll(new String[]{"name", "partner_id", "tz", "image_256", "company_id"});
         ODomain domain = new ODomain();
         domain.add("id", "=", users[0].getUserId());
 
@@ -946,7 +946,7 @@ public class OdooWrapper<T> implements Response.Listener<JSONObject> {
             result.putAll(items.get(0));
         }
         user.setName(result.getString("name"));
-        user.setAvatar(result.getString("image_medium"));
+        user.setAvatar(result.getString("image_256"));
         user.setTimezone(result.getString("tz"));
         Double partner_id = (Double) result.getArray("partner_id").get(0);
         Double company_id = (Double) result.getArray("company_id").get(0);

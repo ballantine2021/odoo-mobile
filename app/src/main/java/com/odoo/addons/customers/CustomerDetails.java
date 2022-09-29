@@ -51,6 +51,7 @@ import com.odoo.core.utils.OStringColorUtil;
 
 import odoo.controls.OField;
 import odoo.controls.OForm;
+import android.util.Log;
 
 public class CustomerDetails extends OdooCompatActivity
         implements View.OnClickListener, OField.IOnFieldValueChangeListener {
@@ -154,7 +155,7 @@ public class CustomerDetails extends OdooCompatActivity
             mForm.initForm(record);
             collapsingToolbarLayout.setTitle(record.getString("name"));
             setCustomerImage();
-            if (record.getInt("id") != 0 && record.getString("large_image").equals("false")) {
+            if (record.getInt("id") != 0 && record.getString("image_512").equals("false")) {
                 BigImageLoader bigImageLoader = new BigImageLoader();
                 bigImageLoader.execute(record.getInt("id"));
             }
@@ -195,14 +196,14 @@ public class CustomerDetails extends OdooCompatActivity
 
     private void setCustomerImage() {
 
-        if (record != null && !record.getString("image_small").equals("false")) {
+        if (record != null && !record.getString("image_128").equals("false")) {
             userImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
             String base64 = newImage;
             if (newImage == null) {
-                if (!record.getString("large_image").equals("false")) {
-                    base64 = record.getString("large_image");
+                if (!record.getString("image_512").equals("false")) {
+                    base64 = record.getString("image_512");
                 } else {
-                    base64 = record.getString("image_small");
+                    base64 = record.getString("image_128");
                 }
             }
             userImage.setImageBitmap(BitmapUtils.getBitmapImage(this, base64));
@@ -237,8 +238,8 @@ public class CustomerDetails extends OdooCompatActivity
                             break;
                     }
                     if (newImage != null) {
-                        values.put("image_small", newImage);
-                        values.put("large_image", newImage);
+                        values.put("image_128", newImage);
+                        values.put("image_512", newImage);
                     }
                     if (record != null) {
                         resPartner.update(record.getInt(OColumn.ROW_ID), values);
@@ -318,10 +319,10 @@ public class CustomerDetails extends OdooCompatActivity
             try {
                 Thread.sleep(300);
                 OdooFields fields = new OdooFields();
-                fields.addAll(new String[]{"image_medium"});
+                fields.addAll(new String[]{"image_256"});
                 OdooResult record = resPartner.getServerDataHelper().read(null, params[0]);
-                if (record != null && !record.getString("image_medium").equals("false")) {
-                    image = record.getString("image_medium");
+                if (record != null && !record.getString("image_256").equals("false")) {
+                    image = record.getString("image_256");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -335,9 +336,9 @@ public class CustomerDetails extends OdooCompatActivity
             if (result != null) {
                 if (!result.equals("false")) {
                     OValues values = new OValues();
-                    values.put("large_image", result);
+                    values.put("image_512", result);
                     resPartner.update(record.getInt(OColumn.ROW_ID), values);
-                    record.put("large_image", result);
+                    record.put("image_512", result);
                     setCustomerImage();
                 }
             }

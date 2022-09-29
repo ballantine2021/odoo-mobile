@@ -15,7 +15,7 @@
         android:layout_height="match_parent">
 
         <odoo.controls.BezelImageView
-            android:id="@+id/image_small"
+            android:id="@+id/image_128"
             android:layout_width="40dp"
             android:layout_margin="@dimen/default_8dp"
             app:maskDrawable="@drawable/circle_mask"

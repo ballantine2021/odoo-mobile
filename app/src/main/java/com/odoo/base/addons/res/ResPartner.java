@@ -22,6 +22,7 @@ package com.odoo.base.addons.res;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.util.Log;
 
 import com.odoo.BuildConfig;
 import com.odoo.core.orm.ODataRow;
@@ -39,12 +40,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ResPartner extends OModel {
+    private static final String TAG = ResPartner.class.getSimpleName();
     public static final String AUTHORITY = BuildConfig.APPLICATION_ID +
             ".core.provider.content.sync.res_partner";
 
     OColumn name = new OColumn("Name", OVarchar.class).setSize(100).setRequired();
     OColumn is_company = new OColumn("Is Company", OBoolean.class).setDefaultValue(false);
-    OColumn image_small = new OColumn("Avatar", OBlob.class).setDefaultValue(false);
+    OColumn image_128 = new OColumn("Avatar", OBlob.class).setDefaultValue(false);
     OColumn street = new OColumn("Street", OVarchar.class).setSize(100);
     OColumn street2 = new OColumn("Street2", OVarchar.class).setSize(100);
     OColumn city = new OColumn("City", OVarchar.class);
@@ -57,16 +59,16 @@ public class ResPartner extends OModel {
     OColumn parent_id = new OColumn("Related Company", ResPartner.class, OColumn.RelationType.ManyToOne)
             .addDomain("is_company", "=", true);
 
-    @Odoo.Domain("[['country_id', '=', @country_id]]")
+//    @Odoo.Domain("[['country_id', '=', @country_id]]")
     OColumn state_id = new OColumn("State", ResCountryState.class, OColumn.RelationType.ManyToOne);
     OColumn country_id = new OColumn("Country", ResCountry.class, OColumn.RelationType.ManyToOne);
-    OColumn customer = new OColumn("Customer", OBoolean.class).setDefaultValue("true");
-    OColumn supplier = new OColumn("Supplier", OBoolean.class).setDefaultValue("false");
+    OColumn is_customer = new OColumn("Customer", OBoolean.class).setDefaultValue("true");
+    OColumn is_supplier = new OColumn("Supplier", OBoolean.class).setDefaultValue("false");
     OColumn comment = new OColumn("Internal Note", OText.class);
-    @Odoo.Functional(store = true, depends = {"parent_id"}, method = "storeCompanyName")
+//    @Odoo.Functional(store = true, depends = {"parent_id"}, method = "storeCompanyName")
     OColumn company_name = new OColumn("Company Name", OVarchar.class).setSize(100)
             .setLocalColumn();
-    OColumn large_image = new OColumn("Image", OBlob.class).setDefaultValue("false").setLocalColumn();
+    OColumn image_512 = new OColumn("Image", OBlob.class).setDefaultValue("false").setLocalColumn();
 
     OColumn category_id = new OColumn("Tags", ResPartnerCategory.class,
             OColumn.RelationType.ManyToMany);
@@ -122,6 +124,7 @@ public class ResPartner extends OModel {
 
     @Override
     public void onModelUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        Log.i(TAG, "upgrading");
         // Execute upgrade script
     }
 }
