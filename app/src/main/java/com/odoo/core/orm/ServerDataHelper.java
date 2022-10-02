@@ -20,6 +20,7 @@
 package com.odoo.core.orm;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.gson.internal.LinkedTreeMap;
 import com.odoo.App;
@@ -139,6 +140,31 @@ public class ServerDataHelper {
         return false;
     }
 
+    public String callMethodCracker(String method, OArguments args) {
+        Log.d(method, args.toString());
+        return callMethodCracker(method, args, null, null);
+    }
+
+    public String callMethodCracker(String method, OArguments args, HashMap<String, Object> context) {
+        return callMethodCracker(mModel.getModelName(), method, args, context, null);
+    }
+
+    public String callMethodCracker(String method, OArguments args,
+                                  HashMap<String, Object> context, HashMap<String, Object> kwargs) {
+        return callMethodCracker(mModel.getModelName(), method, args, context, kwargs);
+    }
+
+    public String callMethodCracker(String model, String method, OArguments args,
+                                  HashMap<String, Object> context, HashMap<String, Object> kwargs) {
+        Log.d(method, args.toString() + "   " + context);
+        if (context != null) {
+            args.add(mOdoo.updateContext(context));
+        }
+        String result = mOdoo
+                .withRetryPolicy(OConstants.RPC_REQUEST_TIME_OUT, OConstants.RPC_REQUEST_RETRIES)
+                .callMethodCracker(model, method, args, kwargs, context);
+        return result;
+    }
 
     public int createOnServer(ORecordValues data) {
         OdooResult result = mOdoo.createRecord(mModel.getModelName(), data);

@@ -25,6 +25,8 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.odoo.BuildConfig;
+import com.odoo.addons.account.AccountPaymentTerm;
+import com.odoo.addons.sale.PriceList;
 import com.odoo.core.orm.ODataRow;
 import com.odoo.core.orm.OModel;
 import com.odoo.core.orm.OValues;
@@ -32,6 +34,7 @@ import com.odoo.core.orm.annotation.Odoo;
 import com.odoo.core.orm.fields.OColumn;
 import com.odoo.core.orm.fields.types.OBlob;
 import com.odoo.core.orm.fields.types.OBoolean;
+import com.odoo.core.orm.fields.types.ODateTime;
 import com.odoo.core.orm.fields.types.OText;
 import com.odoo.core.orm.fields.types.OVarchar;
 import com.odoo.core.support.OUser;
@@ -41,8 +44,7 @@ import java.util.List;
 
 public class ResPartner extends OModel {
     private static final String TAG = ResPartner.class.getSimpleName();
-    public static final String AUTHORITY = BuildConfig.APPLICATION_ID +
-            ".core.provider.content.sync.res_partner";
+    public static final String AUTHORITY = "com.odoo.base.addons.res.res_partner";
 
     OColumn name = new OColumn("Name", OVarchar.class).setSize(100).setRequired();
     OColumn is_company = new OColumn("Is Company", OBoolean.class).setDefaultValue(false);
@@ -62,8 +64,6 @@ public class ResPartner extends OModel {
 //    @Odoo.Domain("[['country_id', '=', @country_id]]")
     OColumn state_id = new OColumn("State", ResCountryState.class, OColumn.RelationType.ManyToOne);
     OColumn country_id = new OColumn("Country", ResCountry.class, OColumn.RelationType.ManyToOne);
-    OColumn is_customer = new OColumn("Customer", OBoolean.class).setDefaultValue("true");
-    OColumn is_supplier = new OColumn("Supplier", OBoolean.class).setDefaultValue("false");
     OColumn comment = new OColumn("Internal Note", OText.class);
 //    @Odoo.Functional(store = true, depends = {"parent_id"}, method = "storeCompanyName")
     OColumn company_name = new OColumn("Company Name", OVarchar.class).setSize(100)
@@ -76,9 +76,15 @@ public class ResPartner extends OModel {
     OColumn child_ids = new OColumn("Contacts", ResPartner.class, OColumn.RelationType.OneToMany)
             .setRelatedColumn("parent_id");
 
+    OColumn property_payment_term_id = new OColumn("Property Payment Term", AccountPaymentTerm.class, OColumn.RelationType.ManyToOne);
+    OColumn property_product_pricelist = new OColumn("Property Product PriceList", PriceList.class, OColumn.RelationType.ManyToOne);
+    //    OColumn team_id = new OColumn("Sale Team", CrmTeam.class, OColumn.RelationType.ManyToOne);
+    OColumn display_name = new OColumn("Display Name", OVarchar.class).setLocalColumn().setDefaultValue("");
+    OColumn write_date = new OColumn("Write Date", ODateTime.class);
+
+
     public ResPartner(Context context, OUser user) {
         super(context, "res.partner", user);
-        setHasMailChatter(true);
     }
 
     @Override
@@ -124,7 +130,6 @@ public class ResPartner extends OModel {
 
     @Override
     public void onModelUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.i(TAG, "upgrading");
         // Execute upgrade script
     }
 }

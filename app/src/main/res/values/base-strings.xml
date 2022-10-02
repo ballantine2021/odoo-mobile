@@ -47,17 +47,21 @@
     <string name="label_drawer_account_manage_accounts">Manage Accounts</string>
     <!-- Common Labels -->
     <string name="title_application_settings">"Application Settings"</string>
-    <string name="title_profile">Profile</string>
-    <string name="title_about">About</string>
-    <string name="title_confirm">Confirm</string>
-    <string name="title_working">Working&#8230;</string>
-    <string name="title_please_wait">Please wait&#8230;</string>
+    <string name="title_profile">Хувийн хэрэг</string>
+    <string name="title_about">Тухай</string>
+    <string name="title_confirm">Батлах</string>
+    <string name="title_working">Боловсруулж байна&#8230;</string>
+    <string name="title_sent_to_server">Серверт илгээж байна&#8230;</string>
+    <string name="title_please_wait">Түр хүлээнэ үү&#8230;</string>
     <string name="label_ok">OK</string>
-    <string name="label_search">Search</string>
-    <string name="label_delete">Delete</string>
-    <string name="label_cancel">Cancel</string>
-    <string name="label_logout">Logout</string>
-    <string name="label_version">Version</string>
+    <string name="label_search">Хайлт</string>
+    <string name="label_refresh">Сэргээх</string>
+    <string name="label_delete">Устгах</string>
+    <string name="label_cancel">Буцах</string>
+    <string name="label_logout">Гарах</string>
+    <string name="label_confirm">Батлах</string>
+    <string name="label_back">Буцах</string>
+    <string name="label_version">Хувилбар</string>
     <string name="label_odoo_mobile_on_github">Odoo Mobile on GitHub</string>
     <string name="label_odoo_developer_mode">Developer Mode</string>
     <string name="label_export_db">Export Database</string>
@@ -66,12 +70,13 @@
     <string name="label_be_patient_we_are_configuring_account_update">Be patient, We are configuring your account updates</string>
     <!-- Toasts -->
     <string name="developer_2_tap">Need 2 tap for developer mode</string>
-    <string name="developer_5_tap">Developer mode activated</string>
-    <string name="toast_setting_saved">Setting saved.</string>
-    <string name="toast_are_you_sure_logout">Are you sure want to logout ?</string>
+    <string name="developer_5_tap">Хөгжүүлэгчийн горим идэвхитэй</string>
+    <string name="toast_setting_saved">Тохиргоо хадгалагдсан.</string>
+    <string name="toast_are_you_sure_logout">Та гархад итгэлтэй байна уу?</string>
     <string name="toast_are_you_sure_delete_account">Are you sure want to delete account ?</string>
-    <string name="toast_network_required">Network required</string>
-    <string name="toast_account_removed">Account Removed Successfully</string>
+    <string name="toast_not_connect_server">Серверт холбогдож чадсангүй!\nСистем админтай холбогдоно уу</string>
+    <string name="toast_network_required">Интернет холболтоо шалгана уу!</string>
+    <string name="toast_account_removed">Хэрэглэгч амжилттай хасагдлаа</string>
     <string name="toast_no_activity_found_to_handle_file">No activity found to handle file</string>
     <string name="toast_updating_password">Updating password</string>
     <string name="toast_something_gone_wrong">Something gone wrong</string>
@@ -108,6 +113,7 @@
     </string-array>
     <string name="summary_about_odoo_mobile">Odoo Mobile</string>
     <!-- About Company Fragment Strings -->
+    <string name="swipe_to_update_list">Жагсаалт шинэчлэхийн тулд шударна уу!</string>
     <string name="about_Company_line1">Copyright © 2004-TODAY Odoo SA. All Rights Reserved.</string>
     <string name="about_Company_line2">Odoo is a trademark of the <a href="https://www.odoo.com/">Odoo.com.</a></string>
     <string name="about_Company_line3">Licenced under the terms of <a href="http://www.gnu.org/licenses/agpl.html/">GNU Affero General Public License</a></string>

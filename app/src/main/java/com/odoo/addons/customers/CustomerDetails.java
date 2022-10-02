@@ -113,8 +113,8 @@ public class CustomerDetails extends OdooCompatActivity
         findViewById(R.id.captureImage).setVisibility(edit ? View.VISIBLE : View.GONE);
         if (mMenu != null) {
             mMenu.findItem(R.id.menu_customer_detail_more).setVisible(!edit);
-            mMenu.findItem(R.id.menu_customer_edit).setVisible(!edit);
-            mMenu.findItem(R.id.menu_customer_save).setVisible(edit);
+//            mMenu.findItem(R.id.menu_customer_edit).setVisible(!edit);
+//            mMenu.findItem(R.id.menu_customer_save).setVisible(edit);
             mMenu.findItem(R.id.menu_customer_cancel).setVisible(edit);
         }
         int color = Color.DKGRAY;
@@ -206,7 +206,7 @@ public class CustomerDetails extends OdooCompatActivity
                     base64 = record.getString("image_128");
                 }
             }
-            userImage.setImageBitmap(BitmapUtils.getBitmapImage(this, base64));
+//            userImage.setImageBitmap(BitmapUtils.getBitmapImage(this, base64));
         } else {
             userImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             userImage.setColorFilter(Color.WHITE);
@@ -225,71 +225,8 @@ public class CustomerDetails extends OdooCompatActivity
             case android.R.id.home:
                 finish();
                 break;
-            case R.id.menu_customer_save:
-                OValues values = mForm.getValues();
-                if (values != null) {
-                    switch (partnerType) {
-                        case Supplier:
-                            values.put("customer", "false");
-                            values.put("supplier", "true");
-                            break;
-                        default:
-                            values.put("customer", "true");
-                            break;
-                    }
-                    if (newImage != null) {
-                        values.put("image_128", newImage);
-                        values.put("image_512", newImage);
-                    }
-                    if (record != null) {
-                        resPartner.update(record.getInt(OColumn.ROW_ID), values);
-                        Toast.makeText(this, R.string.toast_information_saved, Toast.LENGTH_LONG).show();
-                        mEditMode = !mEditMode;
-                        setupToolbar();
-                    } else {
-                        final int row_id = resPartner.insert(values);
-                        if (row_id != OModel.INVALID_ROW_ID) {
-                            finish();
-                        }
-                    }
-                }
-                break;
             case R.id.menu_customer_cancel:
-            case R.id.menu_customer_edit:
-                if (hasRecordInExtra()) {
-                    mEditMode = !mEditMode;
-                    setMode(mEditMode);
-                    mForm.setEditable(mEditMode);
-                    mForm.initForm(record);
-                    setCustomerImage();
-                } else {
-                    finish();
-                }
-                break;
-            case R.id.menu_customer_share:
-                ShareUtil.shareContact(this, record, true);
-                break;
-            case R.id.menu_customer_import:
-                ShareUtil.shareContact(this, record, false);
-                break;
-            case R.id.menu_customer_delete:
-                OAlert.showConfirm(this, OResource.string(this,
-                        R.string.confirm_are_you_sure_want_to_delete),
-                        new OAlert.OnAlertConfirmListener() {
-                            @Override
-                            public void onConfirmChoiceSelect(OAlert.ConfirmType type) {
-                                if (type == OAlert.ConfirmType.POSITIVE) {
-                                    // Deleting record and finishing activity if success.
-                                    if (resPartner.delete(record.getInt(OColumn.ROW_ID))) {
-                                        Toast.makeText(CustomerDetails.this, R.string.toast_record_deleted,
-                                                Toast.LENGTH_SHORT).show();
-                                        finish();
-                                    }
-                                }
-                            }
-                        });
 
-                break;
         }
         return super.onOptionsItemSelected(item);
     }

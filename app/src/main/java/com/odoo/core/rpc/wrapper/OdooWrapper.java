@@ -22,6 +22,7 @@ package com.odoo.core.rpc.wrapper;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RequestQueue;
@@ -53,6 +54,7 @@ import com.odoo.core.rpc.listeners.IModuleInstallListener;
 import com.odoo.core.rpc.listeners.IOdooConnectionListener;
 import com.odoo.core.rpc.listeners.IOdooLoginCallback;
 import com.odoo.core.rpc.listeners.IOdooResponse;
+import com.odoo.core.rpc.listeners.JsonObjectResponse;
 import com.odoo.core.rpc.listeners.OdooError;
 import com.odoo.core.rpc.listeners.OdooSyncResponse;
 import com.odoo.core.support.OUser;
@@ -193,17 +195,82 @@ public class OdooWrapper<T> implements Response.Listener<JSONObject> {
                     }
                 }
             };
-            JsonObjectRequest request = new OdooJSONRequest(url, postData, OdooWrapper.this, errorListener);
+            JsonObjectRequest request = new JsonObjectRequest(url, postData, OdooWrapper.this, errorListener);
             request.setRetryPolicy(new DefaultRetryPolicy(new_request_timeout, new_request_max_retry,
                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             requestQueue.add(request);
         } else {
-            JsonObjectRequest request = new OdooJSONRequest(url, postData, requestFuture, requestFuture);
+            JsonObjectRequest request = new JsonObjectRequest(url, postData, requestFuture, requestFuture);
             request.setRetryPolicy(new DefaultRetryPolicy(new_request_timeout, new_request_max_retry,
                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             requestQueue.add(request);
             try {
                 backResponse.setResponse(parseToResponse(requestFuture.get()));
+            } catch (Exception e) {
+                OdooLog.e(e);
+            }
+        }
+        new_request_timeout = Odoo.REQUEST_TIMEOUT_MS;
+        new_request_max_retry = Odoo.DEFAULT_MAX_RETRIES;
+    }
+
+    private void newSTRINGPOSTRequest(final String url, JSONObject params,
+                                      IOdooResponse odooResponse, JsonObjectResponse backResponse) {
+        OdooLog.d("REQUEST URL : " + url);
+        final JSONObject postData = createRequestWrapper(params, odooResponse);
+        OdooLog.d("POST DATA: " + postData);
+        RequestFuture<JSONObject> requestFuture = RequestFuture.newFuture();
+        if (backResponse == null) {
+            Response.ErrorListener errorListener = new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    OdooLog.d("ERROR RESPONSE : " + error.getMessage());
+                    String message = error.getMessage();
+                    int responseCode = -1;
+                    if (error.networkResponse != null) {
+                        message = "Server Error :" + error.networkResponse.statusCode;
+                        switch (error.networkResponse.statusCode) {
+                            case 400:
+                                responseCode = Odoo.ErrorCode.OdooServerError.get();
+                                break;
+                            case 404:
+                                responseCode = Odoo.ErrorCode.InvalidURL.get();
+                                break;
+                            default:
+                                responseCode = Odoo.ErrorCode.UnknownError.get();
+                        }
+                    }
+                    OdooError odooError = new OdooError(message, error);
+                    odooError.setResponseCode(responseCode);
+                    if (error instanceof TimeoutError) {
+                        odooError.setMessage("Request Time out");
+                        odooError.setServerTrace("Requested too many records. \n\n" +
+                                "You can update values before requesting data:\n" +
+                                "Odoo.REQUEST_TIMEOUT_MS\n" +
+                                "Odoo.DEFAULT_MAX_RETRIES");
+                    }
+                    try {
+                        IOdooResponse response = responseQueue.get(postData.getInt("id"));
+                        if (response != null) {
+                            response.onError(odooError);
+                            responseQueue.remove(postData.getInt("id"));
+                        }
+                    } catch (JSONException e) {
+                        OdooLog.e(e, e.getMessage());
+                    }
+                }
+            };
+            JsonObjectRequest request = new JsonObjectRequest(url, postData, OdooWrapper.this, errorListener);
+            request.setRetryPolicy(new DefaultRetryPolicy(new_request_timeout, new_request_max_retry,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            requestQueue.add(request);
+        } else {
+            JsonObjectRequest request = new JsonObjectRequest(url, postData, requestFuture, requestFuture);
+            request.setRetryPolicy(new DefaultRetryPolicy(new_request_timeout, new_request_max_retry,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            requestQueue.add(request);
+            try {
+                backResponse.setResponse(requestFuture.get().toString());
             } catch (Exception e) {
                 OdooLog.e(e);
             }
@@ -473,10 +540,10 @@ public class OdooWrapper<T> implements Response.Listener<JSONObject> {
 
     private void bindOdooSession(OdooResult response) {
         if (odooSession == null) odooSession = new OdooSession();
-        if (mVersion.getVersionNumber() > 7 && response.containsKey("company_id"))
-            odooSession.setCompanyId(response.getInt("company_id"));
+//        if (mVersion.getVersionNumber() > 7 && response.containsKey("company_id"))
+        odooSession.setCompanyId(response.getInt("company_id"));
         odooSession.setDb(response.getString("db"));
-        odooSession.setSessionId(response.getString("session_id"));
+//        odooSession.setSessionId(response.getString("session_id"));
         odooSession.setUid(response.getInt("uid"));
         odooSession.setUserContext(response.getMap("user_context"));
         odooSession.setUsername(response.getString("username"));
@@ -734,6 +801,52 @@ public class OdooWrapper<T> implements Response.Listener<JSONObject> {
                     new JSONObject(gson.toJson(updateContext(context)))
                     : odooSession.getUserContext());
             newJSONPOSTRequest(url, params, callback, backResponse);
+        } catch (Exception e) {
+            OdooLog.e(e, e.getMessage());
+        }
+    }
+
+    public void callMethodCracker(String model, String method, OArguments arguments,
+                                HashMap<String, Object> kwargs, IOdooResponse callback) {
+        callMethodCracker(model, method, arguments, kwargs, null, callback, null);
+    }
+
+    public String callMethodCracker(String model, String method, OArguments arguments,
+                                  HashMap<String, Object> kwargs) {
+        JsonObjectResponse response = new JsonObjectResponse();
+        callMethodCracker(model, method, arguments, kwargs, null, null, response);
+        return response.get();
+    }
+
+    public void callMethodCracker(String model, String method, OArguments arguments,
+                                HashMap<String, Object> kwargs, HashMap<String, Object> context,
+                                IOdooResponse callback) {
+        callMethodCracker(model, method, arguments, kwargs, context, callback, null);
+    }
+
+    public String callMethodCracker(String model, String method, OArguments arguments,
+                                  HashMap<String, Object> kwargs, HashMap<String, Object> context) {
+        JsonObjectResponse response = new JsonObjectResponse();
+        callMethodCracker(model, method, arguments, kwargs, context, null, response);
+        return response.get();
+    }
+
+    private void callMethodCracker(String model, String method, OArguments arguments,
+                                 HashMap<String, Object> kwargs, HashMap<String, Object> context,
+                                 IOdooResponse callback, JsonObjectResponse backResponse) {
+        String url = serverURL + "/web/dataset/call_kw";
+        try {
+            JSONObject params = new JSONObject();
+            params.put("model", model);
+            params.put("method", method);
+            params.put("args", arguments.getArray());
+            params.put("kwargs", (kwargs != null)
+                    ? new JSONObject(gson.toJson(kwargs)) : new JSONObject());
+            params.put("context", (context != null) ?
+                    new JSONObject(gson.toJson(updateContext(context)))
+                    : odooSession.getUserContext());
+            Log.d(TAG, "callMethodCracker: " + params);
+            newSTRINGPOSTRequest(url, params, callback, backResponse);
         } catch (Exception e) {
             OdooLog.e(e, e.getMessage());
         }

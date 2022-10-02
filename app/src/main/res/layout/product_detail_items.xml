@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff"
+    android:orientation="vertical">
+
+    <!--View Layout-->
+    <LinearLayout
+        android:id="@+id/product_view_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <odoo.controls.OForm
+            android:id="@+id/productForm"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingRight="15dp"
+            android:paddingLeft="15dp"
+            android:orientation="vertical"
+            app:modelName="product.product">
+
+            <odoo.controls.BezelImageView
+                android:id="@+id/image_1920"
+                android:layout_width="match_parent"
+                android:layout_margin="@dimen/default_8dp"
+                android:layout_height="120dp"/>
+
+            <odoo.controls.OField
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fieldName="name"
+                app:controlLabel="@string/label_product_name"
+                app:fieldLabelColor="#00A09D"
+                app:fieldTextAppearance="?android:textAppearanceMedium"
+                app:withBottomPadding="false"
+                app:showIcon="false"/>
+            <odoo.controls.OField
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fieldName="default_code"
+                app:controlLabel="@string/label_product_code"
+                app:fieldLabelColor="#00A09D"
+                app:fieldTextAppearance="?android:textAppearanceMedium"
+                app:withBottomPadding="false"
+                app:showIcon="false"/>
+            <odoo.controls.OField
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fieldName="list_price"
+                app:controlLabel="@string/label_product_price"
+                app:fieldLabelColor="#00A09D"
+                app:fieldTextAppearance="?android:textAppearanceMedium"
+                app:withBottomPadding="false"
+                app:showIcon="false"/>
+            <odoo.controls.OField
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fieldName="barcode"
+                app:controlLabel="@string/label_product_barcode"
+                app:fieldLabelColor="#00A09D"
+                app:fieldTextAppearance="?android:textAppearanceMedium"
+                app:withBottomPadding="false"
+                app:showIcon="false"/>
+
+            <odoo.controls.OField
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fieldName="categ_id"
+                app:controlLabel="@string/label_product_category"
+                app:fieldLabelColor="#00A09D"
+                app:fieldTextAppearance="?android:textAppearanceMedium"
+                app:withBottomPadding="false"
+                app:showIcon="false"/>
+            <odoo.controls.OField
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fieldName="uom_id"
+                app:controlLabel="@string/label_product_uom"
+                app:fieldLabelColor="#00A09D"
+                app:fieldTextAppearance="?android:textAppearanceMedium"
+                app:withBottomPadding="false"
+                app:showIcon="false"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/taxesLayout"
+                android:visibility="gone"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:text="@string/label_product_taxes"
+                    android:textColor="#00A09D"
+                    android:textAllCaps="true"
+                    android:textAppearance="?android:textAppearanceSmall" />
+
+                <com.odoo.addons.stock.NonScrollListView
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:dividerHeight="2dp"
+                    android:divider="@android:color/transparent"
+                    android:id="@+id/taxesListView"/>
+            </LinearLayout>
+        </odoo.controls.OForm>
+
+    </LinearLayout>
+</LinearLayout>
