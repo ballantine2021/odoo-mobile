@@ -105,8 +105,8 @@ public class OModel implements ISyncServiceListener {
     // Local Base columns
     OColumn _id = new OColumn("_ID", OInteger.class).setAutoIncrement().setLocalColumn();
     OColumn _write_date = new OColumn("Local Write Date", ODateTime.class).setLocalColumn();
-    OColumn _is_dirty = new OColumn("Dirty record", OBoolean.class).setDefaultValue(false).setLocalColumn();
-    OColumn _is_active = new OColumn("Active Record", OBoolean.class).setDefaultValue(true).setLocalColumn();
+    OColumn _is_dirty = new OColumn("Dirty record", OBoolean.class).setDefaultValue("false").setLocalColumn();
+    OColumn _is_active = new OColumn("Active Record", OBoolean.class).setDefaultValue("true").setLocalColumn();
 
     public OModel(Context context, String model_name, OUser user) {
         mContext = context;
@@ -216,8 +216,8 @@ public class OModel implements ISyncServiceListener {
                 column = (OColumn) field.get(this);
                 if (column.getName() == null)
                     column.setName(field.getName());
-//                Boolean validField = compatibleField(field);
-                Boolean validField = true;
+                Boolean validField = compatibleField(field);
+//                Boolean validField = true;
                 if (validField) {
                     // Functional Method
                     Method method = checkForFunctionalColumn(field);
@@ -789,6 +789,14 @@ public class OModel implements ISyncServiceListener {
         List<ODataRow> rows = select(new String[]{OColumn.ROW_ID}, "id = ?", new String[]{server_id + ""});
         if (rows.size() > 0) {
             return rows.get(0).getInt(OColumn.ROW_ID);
+        }
+        return INVALID_ROW_ID;
+    }
+
+    public int quickSelectRowId(int server_id) {
+        List<ODataRow> rows = query("SELECT _id FROM " +  model_name.replace(".", "_") + " WHERE id = ?", new String[]{String.valueOf(server_id)});
+        if (rows.size() > 0) {
+            return rows.get(0).getInt("_id");
         }
         return INVALID_ROW_ID;
     }

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="../../../../layout/custom_preview.xml" value="0.20833333333333334" />
+        <entry key="app/src/main/res/drawable/circle_mask_third.xml" value="0.19791666666666666" />
+        <entry key="app/src/main/res/layout/base_login.xml" value="0.18125" />
+        <entry key="app/src/main/res/layout/base_no_items_view.xml" value="0.30833333333333335" />
+        <entry key="app/src/main/res/layout/common_listview.xml" value="0.18125" />
+        <entry key="app/src/main/res/layout/customer_row_item.xml" value="0.18125" />
+        <entry key="app/src/main/res/layout/product_detail_items.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/product_list.xml" value="0.18177083333333333" />
+        <entry key="app/src/main/res/layout/product_row_item.xml" value="0.18177083333333333" />
+        <entry key="app/src/main/res/layout/taxes_list_item.xml" value="0.18177083333333333" />
+        <entry key="app/src/main/res/menu/menu_customer_detail.xml" value="0.1" />
+        <entry key="app/src/main/res/menu/menu_partners.xml" value="0.18125" />
+        <entry key="app/src/main/res/menu/menu_product_detail.xml" value="0.18177083333333333" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

@@ -4,7 +4,8 @@
     <string name="sync_label_customers">Customers</string>
     <string name="toast_information_saved">Information Saved</string>
     <string name="toast_image_size_too_large">Image size too large !</string>
-    <string name="label_no_customer_found">No Customer Found !</string>
+    <string name="label_no_customer_found">Харилцагч алга!</string>
+    <string name="label_no_product_found">Бүтээгдэхүүн алга!</string>
     <string name="message_to">Message to %s</string>
     <string name="add_internal_note">Add and internal note</string>
     <string name="internal_note_hint">Add an internal note that will not be sent to the followers</string>
@@ -16,4 +17,21 @@
     <string name="toast_permission_download_storage_help">Storage permission required to store downloaded files on sdcard of your phone. Please grant permission for use this feature</string>
     <string name="confirm_are_you_sure_want_to_delete">Are you sure want to delete ?</string>
     <string name="toast_record_deleted">Record deleted</string>
+
+    <string name="title_directory">Лавлах</string>
+
+    <string name="label_footer_count">Нийт:\u0020</string>
+
+    <string name="label_product_name">Нэр</string>
+    <string name="label_product_code">Дотоод код</string>
+    <string name="label_product_price">Зарах үнэ</string>
+    <string name="label_product_barcode">Зураасан код</string>
+    <string name="label_product_brand">Бренд</string>
+    <string name="label_product_category">Дотоод ангилал</string>
+    <string name="label_product_uom">Хэмжих нэгж</string>
+    <string name="label_product_taxes">Захиалагчийн татварууд</string>
+
+    <string name="title_activity_quotation">Үнийн санал</string>
+    <string name="title_activity_product_info">Бүтээгдэхүүн</string>
+    <string name="title_activity_customer">Харилцагч</string>
 </resources>

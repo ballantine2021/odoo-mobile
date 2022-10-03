@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/menu_customer_edit"
-        android:icon="@drawable/ic_action_edit"
-        android:title="@string/label_edit"
-        app:showAsAction="always" />
-    <item
-        android:id="@+id/menu_customer_save"
-        android:title="@string/label_save"
-        app:showAsAction="always" />
+<!--    <item-->
+<!--        android:id="@+id/menu_customer_edit"-->
+<!--        android:icon="@drawable/ic_action_edit"-->
+<!--        android:title="@string/label_edit"-->
+<!--        app:showAsAction="always" />-->
+<!--    <item-->
+<!--        android:id="@+id/menu_customer_save"-->
+<!--        android:title="@string/label_save"-->
+<!--        app:showAsAction="always" />-->
     <item
         android:id="@+id/menu_customer_cancel"
         android:title="@string/label_cancel"
@@ -20,15 +20,15 @@
         android:title="@string/label_more"
         app:showAsAction="always">
         <menu>
-            <item
-                android:id="@+id/menu_customer_share"
-                android:title="@string/label_share" />
-            <item
-                android:id="@+id/menu_customer_import"
-                android:title="@string/label_import_contact" />
-            <item
-                android:id="@+id/menu_customer_delete"
-                android:title="@string/label_delete" />
+<!--            <item-->
+<!--                android:id="@+id/menu_customer_share"-->
+<!--                android:title="@string/label_share" />-->
+<!--            <item-->
+<!--                android:id="@+id/menu_customer_import"-->
+<!--                android:title="@string/label_import_contact" />-->
+<!--            <item-->
+<!--                android:id="@+id/menu_customer_delete"-->
+<!--                android:title="@string/label_delete" />-->
         </menu>
     </item>
 </menu>

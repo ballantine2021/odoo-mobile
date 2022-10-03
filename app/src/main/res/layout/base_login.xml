@@ -42,8 +42,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:orientation="horizontal"
-                    android:padding="10dp"
-                    android:visibility="gone">
+                    android:padding="10dp">
 
                     <ImageView
                         android:layout_width="wrap_content"
@@ -81,14 +80,14 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginRight="5dp"
                         android:src="@drawable/ic_action_done"
-                        android:tint="@color/theme_primary"
+                        android:tint="@color/theme_secondary"
                         android:visibility="gone" />
                 </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/theme_primary_dark" />
+                    android:background="@color/theme_secondary" />
 
                 <!-- Username Input -->
                 <LinearLayout
@@ -123,7 +122,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/theme_primary_dark" />
+                    android:background="@color/theme_secondary" />
 
                 <!-- User Password Input -->
                 <LinearLayout
@@ -160,7 +159,7 @@
                     android:id="@+id/layoutBorderDB"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/theme_primary_dark"
+                    android:background="@color/theme_secondary"
                     android:visibility="gone" />
 
 
@@ -202,7 +201,8 @@
                 android:text="@string/disclaimer_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColorLink="#ffffff"
-                android:textColor="#ffffff" />
+                android:textColor="#ffffff"
+                android:visibility="gone"/>
 
             <Button
                 android:id="@+id/btnLogin"
@@ -227,7 +227,8 @@
                 android:padding="5dp"
                 android:text="@string/label_forgot_password"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textColor="#ebebeb" />
+                android:textColor="#ebebeb"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/txvAddSelfHosted"
@@ -240,7 +241,8 @@
                 android:padding="5dp"
                 android:text="@string/label_add_self_hosted_url"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="#ffffff" />
+                android:textColor="#ffffff"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/create_account"
@@ -252,7 +254,8 @@
                 android:text="@string/label_create_account"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="#ffffff"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -295,6 +298,4 @@
         </LinearLayout>
 
     </LinearLayout>
-
-
 </ScrollView>

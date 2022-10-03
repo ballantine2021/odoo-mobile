@@ -20,6 +20,7 @@
 package com.odoo.config;
 
 import com.odoo.addons.customers.Customers;
+import com.odoo.addons.stock.ProductInfo;
 import com.odoo.core.support.addons.AddonsHelper;
 import com.odoo.core.support.addons.OAddon;
 
@@ -33,5 +34,6 @@ public class Addons extends AddonsHelper {
      * for maintain sequence call withSequence(int sequence)
      * OAddon partners = new OAddon(Partners.class).withSequence(2);
      */
-    OAddon customers = new OAddon(Customers.class).setDefault();
+    OAddon productInfo = new OAddon(ProductInfo.class).withSequence(1);
+    OAddon customers = new OAddon(Customers.class).withSequence(2);
 }
