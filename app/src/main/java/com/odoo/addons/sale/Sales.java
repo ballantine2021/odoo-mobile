@@ -296,7 +296,7 @@ public class Sales extends BaseFragment implements OCursorListAdapter.OnViewBind
         protected Void doInBackground(ODataRow... params) {
             OPreferenceManager preferenceManager = new OPreferenceManager(getContext());
             int date_limit = preferenceManager.getInt("sync_data_limit", 7);
-
+            Log.d(TAG, "doInBackground: " + date_limit);
             sol.query("DELETE FROM sale_order_line");
             so.query("DELETE FROM sale_order");
             OArguments args = new OArguments();

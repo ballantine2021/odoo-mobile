@@ -10,16 +10,19 @@ import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.odoo.R;
 import com.odoo.addons.stock.ProductCategory;
@@ -64,6 +67,8 @@ public class AddProductLineWizard extends ActionBarActivity implements
     private Bundle extra;
     private ProductCategory pc;
     final List<String> items = new ArrayList<>();
+    private int previous_order_id = 0;
+    private String previous_order_name = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,8 +89,7 @@ public class AddProductLineWizard extends ActionBarActivity implements
 
         extra.remove("warehouse_id");
         extra.remove("pricelist_id");
-        ResPartner rp = new ResPartner(getApplicationContext(), null);
-        partnerId = rp.selectServerId((int) extra.get("partner_id"));
+        partnerId = (int) extra.get("partner_id");
         extra.remove("partner_id");
 
         pc = new ProductCategory(getApplicationContext(), null);
@@ -130,12 +134,43 @@ public class AddProductLineWizard extends ActionBarActivity implements
             }
 
         });
+
+        fillPreviousOrder();
+    }
+
+    private void fillPreviousOrder(){
+        SaleOrder so = new SaleOrder(getApplicationContext(), null);
+        SaleOrderLine sol = new SaleOrderLine(getApplicationContext(), null);
+        Button fillButton =(Button)findViewById(R.id.button_call_order);
+        for(ODataRow oDataRow : so.query("SELECT _id, name FROM sale_order where state = 'sale' AND partner_id = ? " +
+                "ORDER BY id DESC LIMIT 1", new String[]{String.valueOf((partnerId))})) {
+            previous_order_id = oDataRow.getInt("_id");
+            previous_order_name = oDataRow.getString("name");
+            fillButton.setText(previous_order_name + String.valueOf(" захиалгыг хуулах"));
+            fillButton.setVisibility(View.VISIBLE);
+            fillButton.setOnClickListener( new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    spinnerCategory.setSelection(0);
+                    lineValues.clear();
+                    for(ODataRow oDataRow1 : sol.query("SELECT pp.id AS product_id, sol.product_uom_qty " +
+                            "FROM sale_order_line sol " +
+                            "LEFT JOIN product_product pp ON pp._id = sol.product_id " +
+                            "WHERE sol.order_id = ?", new String[]{String.valueOf((previous_order_id))}))
+                    {
+                        lineValues.put(oDataRow1.getString("product_id"), oDataRow1.getFloat("product_uom_qty"));
+                    }
+                    mAdapter.notifiyDataChange(objects);
+                }
+            });
+        }
     }
 
     public void fillExpandableList(){
         if (extra != null) {
             for (String key : extra.keySet()) {
                 lineValues.put(key, extra.getFloat(key));
+                Log.d("fill", "fill: " + key + " " + extra.getFloat(key));
             }
             localItems.clear();
             String query = "SELECT pp.id, pp.name, pp.default_code, pp.list_price " +
@@ -152,7 +187,7 @@ public class AddProductLineWizard extends ActionBarActivity implements
                     localItems.add(product);
                 }
             }
-
+            Log.d("HEHE", "fillExpandableList: " + localItems.size());
             objects.clear();
             objects.addAll(localItems);
             mAdapter = new OListAdapter(this, R.layout.sale_product_line_item, objects) {

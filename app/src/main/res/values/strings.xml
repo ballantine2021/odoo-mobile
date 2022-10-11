@@ -34,7 +34,7 @@
     <string name="title_activity_quotation">Үнийн санал</string>
     <string name="title_activity_sale_order">Борлуулалтын захиалга</string>
     <string name="title_activity_quotation_detail">Үнийн саналын дэлгэрэнгүй</string>
-    <string name="title_activity_product_info">Бүтээгдэхүүн</string>
+    <string name="title_activity_product_info">Бараа бүтээгдэхүүн</string>
     <string name="title_activity_customer">Харилцагч</string>
 
     <string name="menu_label_action_draft">Үнийн санал болгох</string>
