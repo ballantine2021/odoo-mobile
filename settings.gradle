@@ -1,1 +1,1 @@
-include ':app', ':intro-slider-lib'
+include ':app', ':intro-slider-lib', ':calendar-lib', ':bottom-sheet-lib'

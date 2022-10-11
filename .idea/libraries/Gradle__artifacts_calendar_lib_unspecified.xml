@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: artifacts:calendar-lib:unspecified">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/calendar-lib/build/.transforms/b5c05836f205a07717450a1ae708ed01/calendar-lib/jars/classes.jar!/" />
+      <root url="file://$PROJECT_DIR$/calendar-lib/build/.transforms/b5c05836f205a07717450a1ae708ed01/calendar-lib/res" />
+      <root url="file://$PROJECT_DIR$/calendar-lib/build/.transforms/b5c05836f205a07717450a1ae708ed01/calendar-lib/AndroidManifest.xml" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

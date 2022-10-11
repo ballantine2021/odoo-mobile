@@ -26,6 +26,7 @@ import com.odoo.R;
 import com.odoo.addons.account.AccountPaymentTerm;
 import com.odoo.addons.account.AccountTax;
 import com.odoo.addons.sale.SaleCategory;
+import com.odoo.base.addons.ir.IrModuleModule;
 import com.odoo.base.addons.res.ResCurrency;
 import com.odoo.base.addons.res.ResUsers;
 import com.odoo.core.orm.ODataRow;
@@ -130,6 +131,11 @@ public class ProductInfo extends BaseFragment implements SwipeRefreshLayout.OnRe
         ResCurrency rc = new ResCurrency(getContext(), null);
         for(ODataRow oDataRow : rc.query("SELECT * FROM res_currency")){
             Log.d(TAG, "res_currency: " + oDataRow.getAll());
+        }
+
+        IrModuleModule imm =  new IrModuleModule(getContext(), null);
+        for(ODataRow oDataRow : imm.query("SELECT * FROM ir_module_module")){
+            Log.d(TAG, "ir_module_module: " + oDataRow.getAll() );
         }
     }
 
@@ -283,8 +289,9 @@ public class ProductInfo extends BaseFragment implements SwipeRefreshLayout.OnRe
         protected Void doInBackground(ODataRow... params) {
             ODomain oDomain = new ODomain();
             apt.quickSyncRecords(oDomain);
-            swh.quickSyncRecords(oDomain);
             sc.quickSyncRecords(oDomain);
+            oDomain.add("company_id", "=", user().getCompanyId());
+            swh.quickSyncRecords(oDomain);
 
             //Product Template
             JSONArray jsonArray1 = new JSONArray();

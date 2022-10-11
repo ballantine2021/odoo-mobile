@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<item
+    android:id="@+id/menu_so_confirm_sale"
+    android:icon="@drawable/ic_action_sale_order"
+    android:title="@string/menu_label_action_confirm"/>
+<item
+    android:id="@+id/menu_so_quotation_cancel"
+    android:icon="@drawable/ic_action_navigation_close"
+    android:title="@string/menu_label_action_cancel"/>
+</menu>

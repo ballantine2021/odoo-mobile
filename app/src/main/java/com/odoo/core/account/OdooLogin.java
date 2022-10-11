@@ -1,6 +1,8 @@
 package com.odoo.core.account;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,13 +22,17 @@ import android.widget.Toast;
 import com.odoo.App;
 import com.odoo.OdooActivity;
 import com.odoo.R;
+import com.odoo.base.addons.ir.IrModuleModule;
 import com.odoo.base.addons.res.ResCompany;
+import com.odoo.base.addons.res.ResUsers;
 import com.odoo.config.FirstLaunchConfig;
 import com.odoo.core.auth.OdooAccountManager;
 import com.odoo.core.auth.OdooAuthenticator;
 import com.odoo.core.orm.ODataRow;
+import com.odoo.core.orm.OValues;
 import com.odoo.core.rpc.Odoo;
 import com.odoo.core.rpc.handler.OdooVersionException;
+import com.odoo.core.rpc.helper.OArguments;
 import com.odoo.core.rpc.listeners.IDatabaseListListener;
 import com.odoo.core.rpc.listeners.IOdooConnectionListener;
 import com.odoo.core.rpc.listeners.IOdooLoginCallback;
@@ -36,6 +42,9 @@ import com.odoo.core.support.OdooUserLoginSelectorDialog;
 import com.odoo.core.utils.IntentUtils;
 import com.odoo.core.utils.OResource;
 import com.odoo.datas.OConstants;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,7 +103,7 @@ public class OdooLogin extends AppCompatActivity implements View.OnClickListener
         mSelfHostedURL = true;
         edtSelfHosted.setOnFocusChangeListener(this);
         edtSelfHosted.requestFocus();
-//        edtSelfHosted.setText("192.168.0.101:8088");
+//        edtSelfHosted.setText("192.168.0.100:8088");
         edtUsername = (EditText) findViewById(R.id.edtUserName);
         edtPassword = (EditText) findViewById(R.id.edtPassword);
 //        edtUsername.setText("admin");
@@ -399,6 +408,10 @@ public class OdooLogin extends AppCompatActivity implements View.OnClickListener
         protected void onPostExecute(Boolean success) {
             super.onPostExecute(success);
             mLoginProcessStatus.setText(OResource.string(OdooLogin.this, R.string.status_redirecting));
+
+            GetModuleInstalledCheck getModuleInstalledCheck = new GetModuleInstalledCheck();
+            getModuleInstalledCheck.execute(mUser.getUserId());
+
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -412,6 +425,80 @@ public class OdooLogin extends AppCompatActivity implements View.OnClickListener
                     }
                 }
             }, 1500);
+        }
+    }
+
+    private class GetModuleInstalledCheck extends AsyncTask<Integer, Integer, String> {
+        int userId;
+        IrModuleModule irModule = new IrModuleModule(getApplicationContext(), null);
+        @Override
+        protected String doInBackground(Integer... params) {
+            userId = params[0];
+            try {
+
+                List<String> moduleList = new ArrayList<>();
+                moduleList.add("mobile-backend");
+
+                for(String moduleName : moduleList)
+                {
+                    OArguments oArguments = new OArguments();
+                    oArguments.add("ir.module.module");
+                    oArguments.add(moduleName);
+                    String result = irModule.getServerDataHelper().callMethodCracker("check_module_installed_mobile", oArguments);
+                    JSONObject resultObject = new JSONObject(result);
+                    JSONArray inventoryArrays = resultObject.getJSONArray("result");
+                    if(inventoryArrays.length() > 0) {
+                        for (int i = 0; i < inventoryArrays.length(); i++) {
+                            OValues values = new OValues();
+                            JSONObject obj = inventoryArrays.getJSONObject(i);
+                            values.put("id",obj.getInt("id"));
+                            values.put("name",obj.getString("name"));
+                            values.put("state",obj.getString("state"));
+                            irModule.insert(values);
+                        }
+                    }
+                }
+            }   catch (Exception e) {
+                e.printStackTrace();
+            }
+            return "";
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            if(irModule.select(null, "name = ?",new String[]{"mobile-backend"}).get(0).getString("state").equals("installed"))
+            {
+                GetSaleUserRole getSaleUserRole = new GetSaleUserRole();
+                getSaleUserRole.execute(userId);
+            }
+            super.onPostExecute(result);
+        }
+    }
+
+    private class GetSaleUserRole extends AsyncTask<Integer, Integer, String> {
+        int userId;
+
+        @Override
+        protected String doInBackground(Integer... params) {
+            userId = params[0];
+            Object resultObject = "";
+            try {
+                OArguments args = new OArguments();
+                args.add("res.users");
+                ResUsers resUsers = new ResUsers(getApplicationContext(),null);
+                resultObject = resUsers.getServerDataHelper().callMethod("get_sale_user_role_mobile", args);
+            }   catch (Exception e) {
+                e.printStackTrace();
+            }
+            return resultObject.toString();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("SALE_USER_ROLE", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor1 = sharedPreferences.edit();
+            editor1.putString("userId-"+userId, result);
+            editor1.commit();
         }
     }
 }

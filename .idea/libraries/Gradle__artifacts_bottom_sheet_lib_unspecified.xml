@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: artifacts:bottom-sheet-lib:unspecified">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/bottom-sheet-lib/build/.transforms/0d83346645f831b11a49ab4710d66ff5/bottom-sheet-lib/jars/classes.jar!/" />
+      <root url="file://$PROJECT_DIR$/bottom-sheet-lib/build/.transforms/0d83346645f831b11a49ab4710d66ff5/bottom-sheet-lib/res" />
+      <root url="file://$PROJECT_DIR$/bottom-sheet-lib/build/.transforms/0d83346645f831b11a49ab4710d66ff5/bottom-sheet-lib/AndroidManifest.xml" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
