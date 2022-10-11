@@ -30,14 +30,14 @@
     </PreferenceCategory>
     <PreferenceCategory
         android:key="sync_data_limit_settings"
-        android:title="Data Sync Limit">
+        android:title="Өгөгдөл татах лимит">
         <ListPreference
-            android:defaultValue="60"
+            android:defaultValue="15"
             android:entries="@array/syncDataLimit"
             android:entryValues="@array/syncDataLimitValues"
             android:key="sync_data_limit"
-            android:summary="Define how old data to be synchronized"
-            android:title="Sync data limit" />
+            android:summary="Ямар хугацааны хуучин өгөгдлийг синхрончлохыг тодорхойл"
+            android:title="Өгөгдөл татах лимит" />
     </PreferenceCategory>
 
 

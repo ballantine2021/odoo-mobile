@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:gravity="center_vertical"
+    android:paddingLeft="@dimen/default_8dp"
+    android:paddingTop="@dimen/default_8dp"
+    android:paddingBottom="@dimen/default_8dp"
+    android:textColor="@android:color/white"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+        <TextView
+            android:id="@+id/productName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:ellipsize="end"
+            android:fontFamily="@string/font_normal"
+            android:textColor="@color/body_text_2"
+            android:gravity="center_vertical"
+            android:hint="@string/label_search"
+            android:singleLine="true"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:gravity="center_vertical">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@string/font_normal"
+                    android:textColor="@color/body_text_1"
+                    android:gravity="center_vertical"
+                    android:singleLine="true"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/body_text_1"
+                    android:id="@+id/multiply"
+                    android:singleLine="true"
+                    android:text=" * "/>
+                <TextView
+                    android:id="@+id/productQty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/circle_mask_secondary"
+                    android:fontFamily="@string/font_condensed"
+                    android:gravity="center"
+                    android:padding="3dp"
+                    android:text="0.0"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@android:color/white" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/body_text_1"
+                    android:id="@+id/result"
+                    android:singleLine="true"
+                    android:text="=0.0₮"/>
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/remove_qty"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:background="?android:attr/selectableItemBackground"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:visibility="gone"
+                android:src="@drawable/ic_action_content_remove_circle"
+                android:tint="@color/android_red_dark"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>

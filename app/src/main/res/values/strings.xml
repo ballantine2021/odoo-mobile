@@ -32,6 +32,60 @@
     <string name="label_product_taxes">Захиалагчийн татварууд</string>
 
     <string name="title_activity_quotation">Үнийн санал</string>
-    <string name="title_activity_product_info">Бүтээгдэхүүн</string>
+    <string name="title_activity_sale_order">Борлуулалтын захиалга</string>
+    <string name="title_activity_quotation_detail">Үнийн саналын дэлгэрэнгүй</string>
+    <string name="title_activity_product_info">Бараа бүтээгдэхүүн</string>
     <string name="title_activity_customer">Харилцагч</string>
+
+    <string name="menu_label_action_draft">Үнийн санал болгох</string>
+    <string name="menu_label_action_confirm">Борлуулалт батлах</string>
+    <string name="menu_label_action_cancel">Цуцлах</string>
+    <string name="menu_to_draft">Ноороглох</string>
+
+    <string name="label_sales_quotation">Үнийн санал</string>
+    <string name="label_sales_sale_orders">Борлуулалтын захиалга</string>
+    <string name="label_sales_not_found_quotation">Үнийн санал олдсонгүй</string>
+    <string name="label_sales_not_found_sale_order">Борлуулалтын захиалга олдсонгүй</string>
+    <string name="label_group_by_brand">Брэндээр</string>
+    <string name="label_group_by_category">Ангилалаар</string>
+    <string name="label_product_available_qty">Гарт байгаа тоо</string>
+    <string name="other_brand_name">Бусад</string>
+
+    <string name="label_sale_detail_number">Дугаар</string>
+    <string name="label_sale_detail_customer">Харилцагч</string>
+    <string name="label_sale_detail_date">Огноо</string>
+    <string name="label_sale_detail_payment_term">Төлбөрийн нөхцөл</string>
+    <string name="label_sale_detail_sale_category">Борлуулалтын төрөл</string>
+    <string name="label_sale_detail_warehouse">Агуулах</string>
+    <string name="label_sale_detail_price_list">Үнийн хүснэгт</string>
+    <string name="label_sale_detail_vat_indication">НӨАТ-н үзүүлэлт</string>
+    <string name="label_sale_detail_order_lines">Захиалгын мөр</string>
+    <string name="label_sale_detail_untaxed_amount">Татваргүй дүн:</string>
+    <string name="label_sale_detail_taxes">Татвар:</string>
+    <string name="label_sale_detail_total">Нийт дүн:</string>
+    <string name="label_sale_detail_balance_amount">Төлбөрийн үлдэгдэл:</string>
+    <string name="label_sale_order_line_quantity">Тоо ширхэг</string>
+    <string name="label_sale_order_line_unit_price">Нэгж үнэ</string>
+    <string name="label_sale_order_line_sub_total">Нийт</string>
+    <string name="label_sale_order_count">Захиалгын тоо :</string>
+    <string name="label_total_amount">| Нийт дүн :</string>
+    <string name="label_total_due">| Авлага :</string>
+
+    <string name="selection_state_draft">Үнийн санал</string>
+    <string name="selection_state_sent">Үнийн санал илгээгдсэн</string>
+    <string name="selection_state_cancel">Цуцлагдсан</string>
+    <string name="selection_state_waiting_date">Waiting Schedule</string>
+    <string name="selection_state_sale_order">Борлуулалтын захиалга</string>
+    <string name="selection_state_manual">Нэхэмжлэл үүссэн</string>
+
+    <string name="sale_customer_required">Харилцагчийг сонгоно уу!</string>
+    <string name="sale_payment_term_required">Төлбөрийн нөхцөлийг сонгоно уу!</string>
+    <string name="sale_warehouse_required">Агуулах сонгоно уу!</string>
+    <string name="sale_pricelist_required">Үнийн хүснэгт сонгоно уу!</string>
+
+    <string name="close_activity">Анхаар!!! Дэлгэц буцах гэж байна. Та мэдээлэлийг хадгалахгүй орхихдоо итгэлтэй байна уу?</string>
+    <string name="alert_choose_yes">Тийм</string>
+    <string name="alert_choose_no">Үгүй</string>
+    <string name="toast_error_regist_item">Бараа бүртгэхэд алдаа гарлаа</string>
+    <string name="title_activity_add_product_line_wizard">Бараа бүтээгдэхүүн</string>
 </resources>
