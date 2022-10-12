@@ -38,6 +38,7 @@ public class SaleOrder extends OModel {
     OColumn currency_symbol = new OColumn("Currency Symbol", OVarchar.class).setLocalColumn();
     OColumn warehouse_id = new OColumn("Warehouse", StockWarehouse.class, OColumn.RelationType.ManyToOne).setRequired();
     OColumn order_line = new OColumn("Order Lines", SaleOrderLine.class, OColumn.RelationType.OneToMany).setRelatedColumn("order_id");
+    OColumn picking_ids = new OColumn("Picking ids", OVarchar.class).setDefaultValue("[]");;
 
     public SaleOrder(Context context, OUser user) {
         super(context, "sale.order", user);

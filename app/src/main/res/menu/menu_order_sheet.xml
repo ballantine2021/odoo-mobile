@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <!--<item-->
-    <!--android:id="@+id/menu_so_send_by_email"-->
-    <!--android:icon="@drawable/ic_action_message"-->
-    <!--android:title="@string/label_send_by_email"></item>-->
+    
     <!--<item-->
     <!--android:id="@+id/menu_print_sale_order"-->
     <!--android:icon="@drawable/abc_ic_menu_paste_mtrl_am_alpha"-->

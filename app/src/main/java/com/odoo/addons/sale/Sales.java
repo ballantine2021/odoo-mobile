@@ -25,9 +25,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.odoo.R;
-import com.odoo.addons.account.AccountPaymentTerm;
 import com.odoo.addons.stock.ProductProduct;
-import com.odoo.addons.stock.StockWarehouse;
+import com.odoo.addons.stock.StockPicking;
 import com.odoo.addons.stock.UomUom;
 import com.odoo.base.addons.ir.IrModuleModule;
 import com.odoo.base.addons.res.ResCurrency;
@@ -95,7 +94,7 @@ public class Sales extends BaseFragment implements OCursorListAdapter.OnViewBind
     private ProgressDialog pd;
     private DecimalFormat decimalFormat;
     private BottomSheetNew bottomSheet;
-    private enum SyncType {MultiSync, ConfirmSync, CancelSync, DraftSync}
+    private enum SyncType {MultiSync, ConfirmSync, CancelSync, DraftSync, PickingSync}
     private SyncType sType = SyncType.MultiSync;
     private ODataRow clickedRow = null;
 
@@ -163,6 +162,11 @@ public class Sales extends BaseFragment implements OCursorListAdapter.OnViewBind
                 clickedRow = row;
                 checkConnection();
                 break;
+            case R.id.menu_so_picking_confirm:
+                sType = SyncType.PickingSync;
+                clickedRow = row;
+                checkConnection();
+                break;
         }
         var1.dismiss();
     }
@@ -203,8 +207,14 @@ public class Sales extends BaseFragment implements OCursorListAdapter.OnViewBind
             onSaleOrderDownload.execute();
         }
         else{
-            OnOperation onOperation = new OnOperation();
-            onOperation.execute();
+            if(sType.equals(SyncType.PickingSync)){
+                PickingConfirm pickingConfirm = new PickingConfirm();
+                pickingConfirm.execute();
+            }
+            else {
+                OnOperation onOperation = new OnOperation();
+                onOperation.execute();
+            }
         }
     }
 
@@ -237,6 +247,21 @@ public class Sales extends BaseFragment implements OCursorListAdapter.OnViewBind
             }
 
             response = so.getServerDataHelper().callMethodCracker(action, args);
+
+            if(sType.equals(SyncType.ConfirmSync)){
+                action = "get_picking_ids_mobile";
+                String result = so.getServerDataHelper().callMethodCracker(action, args);
+                try {
+                    JSONObject jsonObject = new JSONObject(result);
+                    if(jsonObject.has("result")){
+                        OValues oValues = new OValues();
+                        oValues.put("picking_ids", jsonObject.getString("result"));
+                        so.update(clickedRow.getInt("_id"), oValues);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
             return response;
         }
 
@@ -275,14 +300,74 @@ public class Sales extends BaseFragment implements OCursorListAdapter.OnViewBind
         }
     }
 
+    private class PickingConfirm extends AsyncTask<ODataRow, String, String> {
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.show();
+        }
+
+        protected String doInBackground(ODataRow... params) {
+            String response ="";
+            String action = "do_new_transfer_sale_mobile";
+            OArguments args = new OArguments();
+            StockPicking sp = new StockPicking(getContext(), null);
+            try {
+                JSONArray arr = new JSONArray(clickedRow.getString("picking_ids"));
+                JSONObject picking_obj = arr.getJSONObject(0);
+                args.add(new JSONArray().put(picking_obj.getInt("id")));
+                response = sp.getServerDataHelper().callMethodCracker(action, args);
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return response;
+        }
+
+        protected void onPostExecute(String result) {
+            super.onPostExecute(String.valueOf(result));
+            OValues oValues = new OValues();
+            try {
+                JSONObject jsonObject = new JSONObject(result);
+                if(jsonObject.has("result")){
+                    if(jsonObject.getString("result").equals("true")){
+                        OValues oValues1 = new OValues();
+                        oValues1.put("picking_ids", "[]");
+                        so.update(clickedRow.getInt("_id"), oValues);
+                        getLoaderManager().restartLoader(0,  null, Sales.this);
+                        Toast.makeText(getContext(), "Хүргэлт амжилттай баталгаажлаа", Toast.LENGTH_LONG).show();
+                    }
+                    if(jsonObject.getString("result").equals("done")){
+                        Toast.makeText(getContext(), "Хүргэлт хэдийн баталгаажсан байна", Toast.LENGTH_LONG).show();
+                    }
+                    if(jsonObject.getString("result").equals("different")){
+                        Toast.makeText(getContext(), "Хүргэлтийг хийх боломжгүй", Toast.LENGTH_LONG).show();
+                    }
+                }else
+                {
+                    JSONObject errorObject = new JSONObject(jsonObject.getString("error"));
+                    if(errorObject.has("data")){
+                        JSONObject dataObject = new JSONObject(errorObject.getString("data"));
+                        if(dataObject.has("message")) {
+                            Toast.makeText(getContext(), "" + dataObject.getString("message"), Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            pd.dismiss();
+        }
+    }
+
     private class OnSaleOrderDownload extends AsyncTask<ODataRow, Void, Void> {
         ResPartner rp = new ResPartner(getContext(), null);
-        AccountPaymentTerm apt = new AccountPaymentTerm(getContext(), null);
+
         SaleCategory sc = new SaleCategory(getContext(), null);
         ResUsers ru = new ResUsers(getContext(), null);
-        PriceList pl = new PriceList(getContext(), null);
         ResCurrency rc = new ResCurrency(getContext(), null);
-        StockWarehouse swh = new StockWarehouse(getContext(), null);
         CrmTeam ct = new CrmTeam(getContext(), null);
         ProductProduct pp = new ProductProduct(getContext(), null);
         UomUom uu = new UomUom(getContext(), null);
@@ -296,7 +381,6 @@ public class Sales extends BaseFragment implements OCursorListAdapter.OnViewBind
         protected Void doInBackground(ODataRow... params) {
             OPreferenceManager preferenceManager = new OPreferenceManager(getContext());
             int date_limit = preferenceManager.getInt("sync_data_limit", 7);
-            Log.d(TAG, "doInBackground: " + date_limit);
             sol.query("DELETE FROM sale_order_line");
             so.query("DELETE FROM sale_order");
             OArguments args = new OArguments();
@@ -313,11 +397,9 @@ public class Sales extends BaseFragment implements OCursorListAdapter.OnViewBind
                             for (int i = 0; i < arr.length(); i++) {
                                 JSONObject obj = arr.getJSONObject(i);
                                 String partner_id = "false";
-                                String payment_term_id = "false";
                                 String user_id = "false";
-                                String pricelist_id = "false";
                                 String currency_id = "false";
-                                String warehouse_id = "false";
+
 
                                 List<ODataRow> partnerList; // 1
                                 if (!obj.getString("partner_id").equals("null")) {
@@ -343,18 +425,6 @@ public class Sales extends BaseFragment implements OCursorListAdapter.OnViewBind
                                         partner_id = partnerList.get(0).getString("_id");
                                 }
 
-                                List<ODataRow> paymentTermList; // 2
-                                if (!obj.getString("payment_term_id").equals("null")) {
-                                    paymentTermList = selectRowId2(apt, obj.getInt("payment_term_id"));
-                                    if (paymentTermList.size() == 0) {
-                                        quickSyncRecordOne(apt, obj.getInt("payment_term_id"));
-                                        paymentTermList = selectRowId2(apt, obj.getInt("payment_term_id"));
-                                        if (paymentTermList.size() > 0)
-                                            payment_term_id = paymentTermList.get(0).getString("_id");
-                                    } else
-                                        payment_term_id = paymentTermList.get(0).getString("_id");
-                                }
-
                                 if (!obj.getString("user_id").equals("null")) {
                                     List<ODataRow> userList = selectRowId2(ru, obj.getInt("user_id"));
                                     if (userList.size() == 0) {
@@ -364,17 +434,6 @@ public class Sales extends BaseFragment implements OCursorListAdapter.OnViewBind
                                             user_id = userList.get(0).getString("_id");
                                     } else
                                         user_id = userList.get(0).getString("_id");
-                                }
-
-                                if (!obj.getString("pricelist_id").equals("null")) {
-                                    List<ODataRow> priceListList = selectRowId2(pl, obj.getInt("pricelist_id"));
-                                    if (priceListList.size() == 0) {
-                                        quickSyncRecordOne(pl, obj.getInt("pricelist_id"));
-                                        priceListList = selectRowId2(pl, obj.getInt("pricelist_id"));
-                                        if (priceListList.size() > 0)
-                                            pricelist_id = priceListList.get(0).getString("_id");
-                                    } else
-                                        pricelist_id = priceListList.get(0).getString("_id");
                                 }
 
                                 if (!obj.getString("currency_id").equals("null")) {
@@ -388,20 +447,9 @@ public class Sales extends BaseFragment implements OCursorListAdapter.OnViewBind
                                         currency_id = currencyList.get(0).getString("_id");
                                 }
 
-                                if (!obj.getString("warehouse_id").equals("null")) {
-                                    List<ODataRow> wareHouseList = selectRowId2(swh, obj.getInt("warehouse_id"));
-                                    if (wareHouseList.size() == 0) {
-                                        quickSyncRecordOne(swh, obj.getInt("warehouse_id"));
-                                        wareHouseList = selectRowId2(swh, obj.getInt("warehouse_id"));
-                                        if (wareHouseList.size() > 0)
-                                            warehouse_id = wareHouseList.get(0).getString("_id");
-                                    } else
-                                        warehouse_id = wareHouseList.get(0).getString("_id");
-                                }
-
                                 so.query("INSERT INTO sale_order (id, name, partner_id, partner_name, date_order, validity_date, state, " +
-                                                "payment_term_id, user_id, amount_total, amount_untaxed, amount_tax, pricelist_id, currency_id, currency_symbol, warehouse_id) " +
-                                                "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                                                "user_id, amount_total, amount_untaxed, amount_tax, currency_id, currency_symbol, picking_ids) " +
+                                                "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                                         new String[]{obj.getString("id"),
                                                 obj.getString("name"),
                                                 String.valueOf(partner_id),
@@ -409,15 +457,13 @@ public class Sales extends BaseFragment implements OCursorListAdapter.OnViewBind
                                                 obj.getString("date_order").equals("null") ? "false" : obj.getString("date_order"),
                                                 obj.getString("validity_date").equals("null") ? "false" : obj.getString("validity_date"),
                                                 obj.getString("state"),
-                                                String.valueOf(payment_term_id),
                                                 String.valueOf(user_id),
                                                 obj.getString("amount_total"),
                                                 obj.getString("amount_untaxed"),
                                                 obj.getString("amount_tax"),
-                                                String.valueOf(pricelist_id),
                                                 String.valueOf(currency_id),
                                                 obj.getString("currency_symbol").equals("null") ? "" : obj.getString("currency_symbol"),
-                                                String.valueOf(warehouse_id)});
+                                                obj.getString("picking_ids")});
 
                                 if (obj.getJSONArray("order_line").length() > 0) {
                                     int order_id;
@@ -657,7 +703,7 @@ public class Sales extends BaseFragment implements OCursorListAdapter.OnViewBind
             where += " AND name LIKE ? ";
             arguments.add("%" + mFilter + "%");
         }
-        return new CursorLoader(getActivity(), db().uri(),null,where,arguments.toArray(new String[arguments.size()]),"date_order desc, id desc");
+        return new CursorLoader(getActivity(), db().uri(),null,where,arguments.toArray(new String[arguments.size()]),"name desc");
     }
 
     @Override
@@ -698,20 +744,20 @@ public class Sales extends BaseFragment implements OCursorListAdapter.OnViewBind
                 switch (mType) {
                     case Quotation:
                         where += " AND (state = ? OR state = ?) AND (partner_name LIKE ? OR ref LIKE ?)";
-                        sales = so.query( "SELECT * FROM sale_order WHERE date(date_order) >=  ? AND date(date_order) <= ?" + where, new String[]{mFilterDate, mFilterDate, "draft", "cancel", "%" + mFilter + "%", "%" + mFilter + "%"});
+                        sales = so.query( "SELECT amount_total FROM sale_order WHERE date(date_order) >=  ? AND date(date_order) <= ?" + where, new String[]{mFilterDate, mFilterDate, "draft", "cancel", "%" + mFilter + "%", "%" + mFilter + "%"});
                         break;
                     case SaleOrder:
                         where += " AND (state = ? OR state = ? OR state = ?) AND (partner_name LIKE ? OR ref LIKE ?)";
-                        sales = so.query( "SELECT * FROM sale_order WHERE date(date_order) >=  ? AND date(date_order) <= ?" + where, new String[]{mFilterDate, mFilterDate, "sale", "sent", "done", "%" + mFilter + "%", "%" + mFilter + "%"});
+                        sales = so.query( "SELECT amount_total FROM sale_order WHERE date(date_order) >=  ? AND date(date_order) <= ?" + where, new String[]{mFilterDate, mFilterDate, "sale", "sent", "done", "%" + mFilter + "%", "%" + mFilter + "%"});
                         break;
                 }
             }else {
                 switch (mType) {
                     case Quotation:
-                        sales = so.query( "SELECT * FROM sale_order WHERE date(date_order) >=  ? AND date(date_order) <= ? AND (state = ? OR state = ?)", new String[]{mFilterDate, mFilterDate, "draft", "cancel"});
+                        sales = so.query( "SELECT amount_total FROM sale_order WHERE date(date_order) >=  ? AND date(date_order) <= ? AND (state = ? OR state = ?)", new String[]{mFilterDate, mFilterDate, "draft", "cancel"});
                         break;
                     case SaleOrder:
-                        sales = so.query( "SELECT * FROM sale_order WHERE date(date_order) >=  ? AND date(date_order) <= ? AND (state = ? OR state = ? OR state = ?)", new String[]{mFilterDate, mFilterDate, "sale", "sent", "done"});
+                        sales = so.query( "SELECT amount_total FROM sale_order WHERE date(date_order) >=  ? AND date(date_order) <= ? AND (state = ? OR state = ? OR state = ?)", new String[]{mFilterDate, mFilterDate, "sale", "sent", "done"});
                         break;
                 }
             }
@@ -754,11 +800,29 @@ public class Sales extends BaseFragment implements OCursorListAdapter.OnViewBind
             builder.setTextColor(Color.parseColor("#414141"));
             builder.actionListener(this);
             builder.setActionIcon(R.drawable.ic_action_edit);
-            builder.title(data == null ? "Харах" : data.getString(data.getColumnIndex("name")));
+            String title = data.getString(data.getColumnIndex("name"));
+
+            if (data.getString(data.getColumnIndex("picking_ids")).length()!=2) {
+                title += " -> Хүргэлт: ";
+                try {
+                    JSONArray arr = new JSONArray(data.getString(data.getColumnIndex("picking_ids")));
+                    for (int i = 0; i < arr.length(); i++) {
+                        JSONObject picking_obj = arr.getJSONObject(i);
+                        title += picking_obj.getString("name") + " ";
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            builder.title(title);
             builder.setData(data);
 
-            if (data.getString(data.getColumnIndex("state")).equals("sale"))
-                builder.menu(R.menu.menu_order_sheet);
+            if (data.getString(data.getColumnIndex("state")).equals("sale")){
+                if (data.getString(data.getColumnIndex("picking_ids")).length()!=2)
+                    builder.menu(R.menu.menu_order_sheet_picking);
+                else
+                    builder.menu(R.menu.menu_order_sheet);
+            }
             if (data.getString(data.getColumnIndex("state")).equals("done"))
                 builder.menu(R.menu.menu_order_sheet);
             if (data.getString(data.getColumnIndex("state")).equals("draft"))

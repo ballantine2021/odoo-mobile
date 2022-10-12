@@ -88,9 +88,6 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
     private OField name;
     private OField partner_id;
     private OField date_order;
-    private OField payment_term_id;
-    private OField price_list_id;
-    private OField warehouse_id;
     private OUser user;
     private Context context;
     private String currencySymbol;
@@ -131,12 +128,9 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
     }
 
     private void init() {
-        name = (OField) oForm.findViewById(R.id.fname);
+//        name = (OField) oForm.findViewById(R.id.fname);
         partner_id = (OField) findViewById(R.id.partnerId);
         date_order = (OField) findViewById(R.id.dateOrder);
-        payment_term_id = (OField) findViewById(R.id.paymentTermId);
-        price_list_id = (OField) findViewById(R.id.priceListId);
-        warehouse_id = (OField) findViewById(R.id.warehouseID);
 
         TextView currency1 = (TextView) findViewById(R.id.currency1);
         TextView currency2 = (TextView) findViewById(R.id.currency2);
@@ -234,15 +228,6 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
                 onCustomerChangeUpdate.execute(field.getValue().toString());
             }
         });
-        price_list_id.setOnValueChangeListener(new OField.IOnFieldValueChangeListener() {
-            @Override
-            public void onFieldValueChange(OField field, Object value) {
-                if(objects.size()>0) {
-                    sType = SyncType.ProductChange;
-                    checkConnection();
-                }
-            }
-        });
         final ExpandableListControl mList = (ExpandableListControl) findViewById(R.id.expListOrderLine);
         mList.setVisibility(View.VISIBLE);
         if (extra != null && record != null) {
@@ -324,9 +309,6 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
         @Override
         protected void onPostExecute(OValues v) {
             super.onPostExecute(v);
-            payment_term_id.setValue(v.contains("payment_term_id") ? v.getInt("payment_term_id") : false);
-            price_list_id.setValue(v.contains("pricelist_id") ? v.getInt("pricelist_id") : false);
-            warehouse_id.setValue(v.contains("warehouse_id") ? v.getInt("warehouse_id") : false);
         }
     }
 
@@ -342,8 +324,6 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
 
                     }
                     intent.putExtras(extra);
-                    intent.putExtra("warehouse_id", (Integer) warehouse_id.getValue());
-                    intent.putExtra("pricelist_id", (Integer) price_list_id.getValue());
                     intent.putExtra("partner_id", (Integer) partner_id.getValue());
                     startActivityForResult(intent, REQUEST_ADD_ITEMS);
                 }
@@ -395,7 +375,6 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
                 menu.findItem(R.id.menu_sales_detail_save).setVisible(false);
             }
         }
-        name.setEditable(false);
         return true;
     }
 
@@ -406,23 +385,13 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
                 onBackPressed();
                 break;
             case R.id.menu_sales_detail_save: {
-                if(!partner_id.getValue().toString().equals("-1")
-                        && !price_list_id.getValue().toString().equals("-1")
-                        && !warehouse_id.getValue().toString().equals("-1")) {
+                if(!partner_id.getValue().toString().equals("-1")) {
                         mMenu.findItem(R.id.menu_sales_detail_save).setEnabled(false);
                         sType = SyncType.SaveSync;
                         checkConnection();
                 }else {
                     if(partner_id.getValue().toString().equals("-1")) {
                         Toast.makeText(context, R.string.sale_customer_required, Toast.LENGTH_SHORT).show();
-                        break;
-                    }
-                    if(warehouse_id.getValue().toString().equals("-1")) {
-                        Toast.makeText(context, R.string.sale_warehouse_required, Toast.LENGTH_SHORT).show();
-                        break;
-                    }
-                    if(price_list_id.getValue().toString().equals("-1")) {
-                        Toast.makeText(context, R.string.sale_pricelist_required, Toast.LENGTH_SHORT).show();
                         break;
                     }
                 }
@@ -502,11 +471,8 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
         private ProgressDialog progressDialog;
         private ResPartner rp = new ResPartner(getBaseContext(), null);
         private ResUsers ru = new ResUsers(getBaseContext(), null);
-        private AccountPaymentTerm apt = new AccountPaymentTerm(getBaseContext(), null);
         private StockWarehouse swh = new StockWarehouse(getBaseContext(), null);
         private ResCurrency rc = new ResCurrency(getBaseContext(), null);
-        private PriceList pl = new PriceList(getBaseContext(), null);
-        private CrmTeam ct = new CrmTeam(getBaseContext(), null);
         private boolean success = false;
         private String message = "";
 
@@ -530,18 +496,6 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
                     partner_server_id = rp.selectServerId(values.getInt("partner_id"));
                     ODataRow oDataRow = rp.browse(values.getInt("partner_id"));
                 }
-
-                int pricelist_server_id = -1;
-                if (!values.getString("pricelist_id").equals("false"))
-                    pricelist_server_id = pl.selectServerId(values.getInt("pricelist_id"));
-
-                int warehouse_server_id = -1;
-                if (!values.getString("warehouse_id").equals("false"))
-                    warehouse_server_id = swh.selectServerId(values.getInt("warehouse_id"));
-
-                int payment_term_server_id = -1;
-                if (!values.getString("payment_term_id").equals("false"))
-                    payment_term_server_id = apt.selectServerId(values.getInt("payment_term_id"));
 
                 for (Object line : objects) {
                     JSONArray o_line = new JSONArray();
@@ -574,9 +528,6 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
                 JSONObject data = new JSONObject();
                 data.put("partner_id", partner_server_id > 0 ? partner_server_id:false);
                 data.put("date_order", values.getString("date_order"));
-                data.put("warehouse_id", warehouse_server_id > 0 ? warehouse_server_id:false);
-                data.put("pricelist_id", pricelist_server_id > 0 ? pricelist_server_id:false);
-                data.put("payment_term_id", payment_term_server_id > 0 ? payment_term_server_id:false);
                 data.put("order_line", order_line);
 
                 int saleOrderId = 0;
@@ -620,11 +571,8 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
                         for (int i = 0; i < res_obj.getJSONArray("result").length(); i++) {
                             JSONObject obj = res_obj.getJSONArray("result").getJSONObject(i);
                             String partner_id = "false";
-                            String payment_term_id = "false";
                             String user_id = "false";
-                            String pricelist_id = "false";
                             String currency_id = "false";
-                            String warehouse_id = "false";
 
                             List<ODataRow> partnerList; // 1
                             if (!obj.getString("partner_id").equals("null")) {
@@ -650,18 +598,6 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
                                     partner_id = partnerList.get(0).getString("_id");
                             }
 
-                            List<ODataRow> paymentTermList; // 2
-                            if (!obj.getString("payment_term_id").equals("null")) {
-                                paymentTermList = selectRowId2(apt, obj.getInt("payment_term_id"));
-                                if (paymentTermList.size() == 0) {
-                                    quickSyncRecordOne(apt, obj.getInt("payment_term_id"));
-                                    paymentTermList = selectRowId2(apt, obj.getInt("payment_term_id"));
-                                    if (paymentTermList.size() > 0)
-                                        payment_term_id = paymentTermList.get(0).getString("_id");
-                                } else
-                                    payment_term_id = paymentTermList.get(0).getString("_id");
-                            }
-
                             if (!obj.getString("user_id").equals("null")) {
                                 List<ODataRow> userList = selectRowId2(ru, obj.getInt("user_id"));
                                 if (userList.size() == 0) {
@@ -671,17 +607,6 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
                                         user_id = userList.get(0).getString("_id");
                                 } else
                                     user_id = userList.get(0).getString("_id");
-                            }
-
-                            if (!obj.getString("pricelist_id").equals("null")) {
-                                List<ODataRow> priceListList = selectRowId2(pl, obj.getInt("pricelist_id"));
-                                if (priceListList.size() == 0) {
-                                    quickSyncRecordOne(pl, obj.getInt("pricelist_id"));
-                                    priceListList = selectRowId2(pl, obj.getInt("pricelist_id"));
-                                    if (priceListList.size() > 0)
-                                        pricelist_id = priceListList.get(0).getString("_id");
-                                } else
-                                    pricelist_id = priceListList.get(0).getString("_id");
                             }
 
                             if (!obj.getString("currency_id").equals("null")) {
@@ -695,21 +620,9 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
                                     currency_id = currencyList.get(0).getString("_id");
                             }
 
-                            if (!obj.getString("warehouse_id").equals("null")) {
-                                List<ODataRow> wareHouseList = selectRowId2(swh, obj.getInt("warehouse_id"));
-                                if (wareHouseList.size() == 0) {
-                                    quickSyncRecordOne(swh, obj.getInt("warehouse_id"));
-                                    wareHouseList = selectRowId2(swh, obj.getInt("warehouse_id"));
-                                    if (wareHouseList.size() > 0)
-                                        warehouse_id = wareHouseList.get(0).getString("_id");
-                                } else
-                                    warehouse_id = wareHouseList.get(0).getString("_id");
-                            }
-
                             so.query("INSERT INTO sale_order (id, name, partner_id, partner_name,  date_order, validity_date, state, " +
-                                            "payment_term_id, user_id, amount_total, amount_untaxed, amount_tax, pricelist_id, currency_id, currency_symbol, " +
-                                            "warehouse_id) " +
-                                            "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                                            "user_id, amount_total, amount_untaxed, amount_tax, currency_id, currency_symbol) " +
+                                            "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",
                                     new String[]{obj.getString("id"),
                                             obj.getString("name"),
                                             String.valueOf(partner_id),
@@ -717,15 +630,15 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
                                             obj.getString("date_order").equals("null") ? "false" : obj.getString("date_order"),
                                             obj.getString("validity_date").equals("null") ? "false" : obj.getString("validity_date"),
                                             obj.getString("state"),
-                                            String.valueOf(payment_term_id),
+
                                             String.valueOf(user_id),
                                             obj.getString("amount_total"),
                                             obj.getString("amount_untaxed"),
                                             obj.getString("amount_tax"),
-                                            String.valueOf(pricelist_id),
+
                                             String.valueOf(currency_id),
-                                            obj.getString("currency_symbol").equals("null") ? "" : obj.getString("currency_symbol"),
-                                            String.valueOf(warehouse_id)});
+                                            obj.getString("currency_symbol").equals("null") ? "" : obj.getString("currency_symbol")});
+
 
                             if (obj.getJSONArray("order_line").length() > 0) {
                                 int order_id;
@@ -852,8 +765,7 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
     private class OnProductChange extends AsyncTask<HashMap<String, Float>, Void, List<ODataRow>> {
         ProgressDialog progressDialog;
         ResPartner rp;
-        PriceList pl;
-        StockWarehouse swh;
+
         @Override
         protected void onPreExecute() {
             progressDialog = new ProgressDialog(SalesDetail.this);
@@ -862,8 +774,6 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
             progressDialog.setCancelable(false);
             progressDialog.show();
             rp = new ResPartner(context, null);
-            pl = new PriceList(context, null);
-            swh = new StockWarehouse(context, null);
         }
 
         @Override
@@ -879,12 +789,8 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
                 }
 
                 int partner = rp.selectServerId((Integer) partner_id.getValue());
-                int priceList_id = pl.selectServerId((Integer) price_list_id.getValue());
-                int warehouse = swh.selectServerId((Integer) warehouse_id.getValue());
                 OArguments args = new OArguments();
                 args.add(partner);
-                args.add(priceList_id);
-                args.add(warehouse);
                 args.add(lineArray);
 
                 String result = so.getServerDataHelper().callMethodCracker("onchange_product_id_mobile", args);
