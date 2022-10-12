@@ -170,7 +170,6 @@ public class AddProductLineWizard extends ActionBarActivity implements
         if (extra != null) {
             for (String key : extra.keySet()) {
                 lineValues.put(key, extra.getFloat(key));
-                Log.d("fill", "fill: " + key + " " + extra.getFloat(key));
             }
             localItems.clear();
             String query = "SELECT pp.id, pp.name, pp.default_code, pp.list_price " +

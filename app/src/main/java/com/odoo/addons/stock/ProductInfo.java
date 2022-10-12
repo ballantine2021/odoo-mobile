@@ -100,10 +100,8 @@ public class ProductInfo extends BaseFragment implements SwipeRefreshLayout.OnRe
         pc = new ProductCategory(getContext(),null);
         uu = new UomUom(getContext(),null);
         at = new AccountTax(getContext(), null);
-        apt = new AccountPaymentTerm(getContext(), null);
         sc = new SaleCategory(getContext(), null);
         ru = new ResUsers(getContext(), null);
-        swh = new StockWarehouse(getContext(), null);
 
 
         getLoaderManager().initLoader(0, null, this);
@@ -118,10 +116,6 @@ public class ProductInfo extends BaseFragment implements SwipeRefreshLayout.OnRe
 
         for(ODataRow oDataRow : at.query("SELECT * FROM product_product_account_tax_rel")){
             Log.d(TAG, "product_product_account_tax_rel: " + oDataRow.getAll());
-        }
-
-        for(ODataRow oDataRow : apt.query("SELECT * FROM account_payment_term")){
-            Log.d(TAG, "account_payment_term: " + oDataRow.getAll());
         }
 
         for(ODataRow oDataRow : ru.query("SELECT * FROM res_users")){
@@ -288,10 +282,10 @@ public class ProductInfo extends BaseFragment implements SwipeRefreshLayout.OnRe
         @Override
         protected Void doInBackground(ODataRow... params) {
             ODomain oDomain = new ODomain();
-            apt.quickSyncRecords(oDomain);
+//            apt.quickSyncRecords(oDomain);
             sc.quickSyncRecords(oDomain);
             oDomain.add("company_id", "=", user().getCompanyId());
-            swh.quickSyncRecords(oDomain);
+//            swh.quickSyncRecords(oDomain);
 
             //Product Template
             JSONArray jsonArray1 = new JSONArray();

@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:prefix="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
@@ -33,35 +32,6 @@
 
             <odoo.controls.OField
                 android:layout_width="match_parent"
-                android:id="@+id/fname"
-                android:saveEnabled="false"
-                app:fieldName="name"
-                app:showLabel="true"
-                app:showIcon="true"
-                app:defaultFieldValue="\"
-                app:iconTint="@color/theme_secondary"
-                app:fieldTextAppearance="?android:textAppearanceMedium"
-                android:layout_height="wrap_content"
-                app:controlLabel="@string/label_sale_detail_number"/>
-
-            <View style="@style/ViewSeparator" />
-
-            <odoo.controls.OField
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/partnerId"
-                app:fieldName="partner_id"
-                app:fieldTextAppearance="?android:textAppearanceMedium"
-                app:iconResource="@drawable/ic_action_user"
-                app:iconTint="@color/theme_secondary"
-                app:showLabel="true"
-                app:widgetType="Searchable"
-                app:controlLabel="@string/label_sale_detail_customer"/>
-
-            <View style="@style/ViewSeparator" />
-
-            <odoo.controls.OField
-                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/dateOrder"
                 app:fieldName="date_order"
@@ -77,42 +47,15 @@
 
             <odoo.controls.OField
                 android:layout_width="match_parent"
-                android:layout_height="68dp"
-                android:id="@+id/paymentTermId"
-                app:fieldName="payment_term_id"
-                app:fieldTextAppearance="?android:textAppearanceSmall"
-                app:controlLabel="@string/label_sale_detail_payment_term"
-                app:showIcon="true"
-                app:withBottomPadding="false"
-                app:showLabel="true" />
-
-            <View style="@style/ViewSeparator" />
-
-            <odoo.controls.OField
-                android:layout_width="match_parent"
-                android:layout_height="68dp"
-                android:id="@+id/warehouseID"
-                app:fieldName="warehouse_id"
-                app:controlLabel="@string/label_sale_detail_warehouse"
-                prefix:autoUIGenerate = "true"
+                android:layout_height="wrap_content"
+                android:id="@+id/partnerId"
+                app:fieldName="partner_id"
+                app:fieldTextAppearance="?android:textAppearanceMedium"
+                app:iconResource="@drawable/ic_action_user"
+                app:iconTint="@color/theme_secondary"
                 app:showLabel="true"
-                app:withBottomPadding="false"
-                app:fieldTextAppearance="?android:textAppearanceSmall"
-                app:showIcon="true"/>
-
-            <View style="@style/ViewSeparator" />
-
-            <odoo.controls.OField
-                android:layout_width="match_parent"
-                android:layout_height="68dp"
-                android:id="@+id/priceListId"
-                app:fieldName="pricelist_id"
-                app:controlLabel="@string/label_sale_detail_price_list"
-                prefix:autoUIGenerate = "true"
-                app:showLabel="true"
-                app:withBottomPadding="false"
-                app:fieldTextAppearance="?android:textAppearanceSmall"
-                app:showIcon="true"/>
+                app:widgetType="Searchable"
+                app:controlLabel="@string/label_sale_detail_customer"/>
 
             <View style="@style/ViewSeparator" />
 
