@@ -494,7 +494,6 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
                 int partner_server_id = -1;
                 if (!values.getString("partner_id").equals("false")) {
                     partner_server_id = rp.selectServerId(values.getInt("partner_id"));
-                    ODataRow oDataRow = rp.browse(values.getInt("partner_id"));
                 }
 
                 for (Object line : objects) {

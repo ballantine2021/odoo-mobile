@@ -158,6 +158,12 @@ public class ProductInfo extends BaseFragment implements
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         listAdapter.changeCursor(data);
         refreshFooter();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                OControls.setGone(mView, R.id.loadingProgress);
+            }
+        }, 500);
     }
 
 

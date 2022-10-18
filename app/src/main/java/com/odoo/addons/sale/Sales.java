@@ -706,6 +706,7 @@ public class Sales extends BaseFragment implements OCursorListAdapter.OnViewBind
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        OControls.setGone(mView, R.id.loadingProgress);
                         OControls.setVisible(calendarView, R.id.items_container);
                     }
                 }, 500);
@@ -713,6 +714,7 @@ public class Sales extends BaseFragment implements OCursorListAdapter.OnViewBind
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        OControls.setGone(mView, R.id.loadingProgress);
                         OControls.setGone(calendarView, R.id.items_container);
                     }
                 }, 500);

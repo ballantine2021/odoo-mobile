@@ -10,14 +10,15 @@
         android:layout_above="@+id/footerLayout"
         android:orientation="vertical">
 
+        <include
+            android:id="@+id/loadingProgress"
+            layout="@layout/listview_data_loading_progress" />
+
         <ListView
             android:id="@+id/product_list_view"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" />
 
-        <include
-            android:id="@+id/loadingProgress"
-            layout="@layout/listview_data_loading_progress" />
     </LinearLayout>
 
     <LinearLayout

@@ -4,7 +4,9 @@
     android:layout_height="match_parent"
     android:background="#fff">
 
-    <View style="@style/ViewSeparator" />
+    <include
+        android:id="@+id/loadingProgress"
+        layout="@layout/listview_data_loading_progress" />
 
     <ListView
         android:id="@+id/items_container"
