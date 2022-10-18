@@ -11,7 +11,8 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/intro-slider-lib" />
+            <option value="$PROJECT_DIR$/bottom-sheet-lib" />
+            <option value="$PROJECT_DIR$/calendar-lib" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
