@@ -12,7 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.SwipeRefreshLayout;
+//import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -71,7 +71,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class Sales extends BaseFragment implements OCursorListAdapter.OnViewBindListener,
-        ISyncStatusObserverListener, SwipeRefreshLayout.OnRefreshListener,
+        ISyncStatusObserverListener,
         LoaderManager.LoaderCallbacks<Cursor>, IOnItemClickListener, View.OnClickListener,
         IOnBackPressListener,IOnSearchViewChangeListener,
         BottomSheetListenersNew.OnSheetItemClickListener,BottomSheetListenersNew.OnSheetActionClickListener,
@@ -88,7 +88,7 @@ public class Sales extends BaseFragment implements OCursorListAdapter.OnViewBind
     private View calendarView = null;
     private ListView quotationList;
     private OdooCalendar odooCalendar;
-    private Date date = new Date();
+    private final Date date = new Date();
     private String mFilterDate = date.toString();
     private List<ODataRow> sales ;
     private ProgressDialog pd;
@@ -106,6 +106,8 @@ public class Sales extends BaseFragment implements OCursorListAdapter.OnViewBind
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
+        calendarView = LayoutInflater.from(getActivity()).inflate(R.layout.sale_order_dashboard_items,
+                container, false);
         return inflater.inflate(R.layout.sale_order_dashboard, container, false);
     }
 
@@ -185,7 +187,6 @@ public class Sales extends BaseFragment implements OCursorListAdapter.OnViewBind
     public View getEventsView(ViewGroup viewGroup, SysCal.DateInfo dateInfo) {
         calendarView = LayoutInflater.from(getActivity()).inflate(R.layout.sale_order_dashboard_items,
                 viewGroup, false);
-        calendarView.findViewById(R.id.dashboard_no_item_view).setOnClickListener(this);
         quotationList = (ListView) calendarView.findViewById(R.id.items_container);
         mFilterDate = dateInfo.getDateString();
         setHasFloatingButton(mView, R.id.fabButton, quotationList, this);
@@ -365,10 +366,8 @@ public class Sales extends BaseFragment implements OCursorListAdapter.OnViewBind
     private class OnSaleOrderDownload extends AsyncTask<ODataRow, Void, Void> {
         ResPartner rp = new ResPartner(getContext(), null);
 
-        SaleCategory sc = new SaleCategory(getContext(), null);
         ResUsers ru = new ResUsers(getContext(), null);
         ResCurrency rc = new ResCurrency(getContext(), null);
-        CrmTeam ct = new CrmTeam(getContext(), null);
         ProductProduct pp = new ProductProduct(getContext(), null);
         UomUom uu = new UomUom(getContext(), null);
 
@@ -621,8 +620,6 @@ public class Sales extends BaseFragment implements OCursorListAdapter.OnViewBind
         OControls.setText(view, R.id.amount_total, decimalFormat.format(row.get("amount_total")));
         switch (row.getString("state")){
             case "sale":
-                OControls.setText(view, R.id.state, R.string.selection_state_sale_order);
-                break;
             case "done":
                 OControls.setText(view, R.id.state, R.string.selection_state_sale_order);
                 break;
@@ -653,11 +650,6 @@ public class Sales extends BaseFragment implements OCursorListAdapter.OnViewBind
         ODomain singleDomain = new ODomain();
         singleDomain.add("id", "=", server_id);
         model.quickSyncRecords(singleDomain);
-    }
-
-    @Override
-    public void onRefresh() {
-        checkConnection();
     }
 
     void checkConnection(){
@@ -714,23 +706,14 @@ public class Sales extends BaseFragment implements OCursorListAdapter.OnViewBind
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        OControls.setGone(calendarView, R.id.dashboard_progress);
                         OControls.setVisible(calendarView, R.id.items_container);
-                        OControls.setGone(calendarView, R.id.dashboard_no_items);
-                        setHasSwipeRefreshView(calendarView, R.id.swipe_container_mn, Sales.this);
                     }
                 }, 500);
             } else {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        OControls.setGone(calendarView, R.id.dashboard_progress);
                         OControls.setGone(calendarView, R.id.items_container);
-                        OControls.setVisible(calendarView, R.id.dashboard_no_items);
-                        setHasSwipeRefreshView(calendarView, R.id.dashboard_no_items, Sales.this);
-                        OControls.setImage(calendarView, R.id.icon, R.drawable.ic_action_quotation);
-                        OControls.setText(calendarView, R.id.title, mType== Type.Quotation ? R.string.label_sales_not_found_quotation : R.string.label_sales_not_found_sale_order);
-                        OControls.setText(calendarView, R.id.subTitle,"");
                     }
                 }, 500);
             }

@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -55,7 +54,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductInfo extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener,
+public class ProductInfo extends BaseFragment implements
         ISyncStatusObserverListener, OCursorListAdapter.OnViewBindListener, IOnBackPressListener,
         LoaderManager.LoaderCallbacks<Cursor>, IOnSearchViewChangeListener,IOdooConnectionListener,
         AdapterView.OnItemClickListener{
@@ -159,36 +158,6 @@ public class ProductInfo extends BaseFragment implements SwipeRefreshLayout.OnRe
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         listAdapter.changeCursor(data);
         refreshFooter();
-        if (data.getCount() > 0) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-
-                    OControls.setGone(mView, R.id.loadingProgress);
-                    OControls.setVisible(mView, R.id.swipe_container);
-                    OControls.setGone(mView, R.id.data_list_no_item);
-
-                    OControls.setGone(mView, R.id.icon);
-                    OControls.setGone(mView, R.id.title);
-                    OControls.setGone(mView, R.id.subTitle);
-
-                    setHasSwipeRefreshView(mView, R.id.swipe_container, ProductInfo.this);
-                }
-            }, 500);
-        } else {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    OControls.setGone(mView, R.id.loadingProgress);
-                    OControls.setGone(mView, R.id.swipe_container);
-                    OControls.setVisible(mView, R.id.data_list_no_item);
-                    OControls.setImage(mView, R.id.icon, R.drawable.ic_action_product);
-                    OControls.setText(mView, R.id.title, _s(R.string.label_no_product_found));
-                    OControls.setText(mView, R.id.subTitle, _s(R.string.swipe_to_update_list));
-                    setHasSwipeRefreshView(mView, R.id.data_list_no_item, ProductInfo.this);
-                }
-            }, 500);
-        }
     }
 
 
@@ -536,11 +505,6 @@ public class ProductInfo extends BaseFragment implements SwipeRefreshLayout.OnRe
         ODomain singleDomain = new ODomain();
         singleDomain.add("id", "=", server_id);
         model.quickSyncRecords(singleDomain);
-    }
-
-    @Override
-    public void onRefresh() {
-        checkConnection();
     }
 
     private void checkConnection(){

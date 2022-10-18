@@ -46,7 +46,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.odoo.core.account.AppIntro;
 import com.odoo.core.account.ManageAccounts;
 import com.odoo.core.account.OdooLogin;
 import com.odoo.core.account.OdooUserAskPassword;
@@ -114,7 +113,6 @@ public class OdooActivity extends OdooCompatActivity {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    startActivity(new Intent(OdooActivity.this, AppIntro.class));
                 }
             }, 1000);
         }
