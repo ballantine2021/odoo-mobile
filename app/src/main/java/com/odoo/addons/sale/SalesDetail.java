@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,6 +15,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -252,9 +254,20 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
                     if(productList.size() > 0){
                         final int productServerID = productList.get(0).getInt("id");
                         OControls.setText(mView, R.id.edtName, (productList.get(0).getString("default_code").equals("false") ? productList.get(0).getString("name"): "[" + productList.get(0).getString("default_code") + "] ") + productList.get(0).getString("name"));
+                        if (row.getFloat("virtual_available") != -100)
+                            OControls.setText(mView, R.id.edtVirtualAvailable, decimalFormat2.format(row.getFloat("virtual_available")));
+                        else
+                            OControls.setText(mView, R.id.edtVirtualAvailable, decimalFormat2.format(0.0));
+
                         OControls.setText(mView, R.id.edtProductQty, decimalFormat2.format(row.getFloat("product_uom_qty")));
+                        if (row.getFloat("virtual_available") != -100){
+                            if (row.getFloat("virtual_available") < row.getFloat("product_uom_qty"))
+                                OControls.setTextColor(mView, R.id.edtProductQty, Color.RED);
+                        }
+
                         OControls.setText(mView, R.id.edtProductPrice, decimalFormat1.format(row.getFloat("price_unit")));
                         OControls.setText(mView, R.id.edtSubTotal,  decimalFormat1.format(row.getFloat("price_total")));
+
                         mView.setOnLongClickListener(new View.OnLongClickListener(){
                             @Override
                             public boolean onLongClick(View v) {
@@ -641,7 +654,7 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
 
                             if (obj.getJSONArray("order_line").length() > 0) {
                                 int order_id;
-                                final int COLUMNS_SIZE = 10;
+                                final int COLUMNS_SIZE = 11;
                                 final int MAX_ROW = 999 / COLUMNS_SIZE;
                                 List<ODataRow> saleOrderList = so.query("SELECT _id FROM sale_order WHERE id = ?", new String[]{obj.getString("id")});
                                 if(saleOrderList.size() > 0){
@@ -655,7 +668,7 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
                                         if (counter == MAX_ROW || order_line_sale.length() - 1 == l) {
                                             counter = 0;
                                             String sql = "INSERT INTO sale_order_line (id, product_id, name, product_uom_qty, price_unit, " +
-                                                    "price_tax, price_subtotal, price_total, order_id, product_uom) " +
+                                                    "price_tax, price_subtotal, price_total, order_id, product_uom, virtual_available) " +
                                                     "VALUES ";
                                             String[] arguments = new String[]{};
                                             for (int j = 0; j < tempList.size(); j++) {
@@ -716,6 +729,7 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
                                                 arguments[j * COLUMNS_SIZE + 7] = tempList.get(j).getString("price_total");
                                                 arguments[j * COLUMNS_SIZE + 8] = String.valueOf(order_id);
                                                 arguments[j * COLUMNS_SIZE + 9] = product_uom;
+                                                arguments[j * COLUMNS_SIZE + 10] = tempList.get(j).getString("virtual_available");
 
                                                 if (j % MAX_ROW == MAX_ROW - 1 || (j == tempList.size() - 1)) {
                                                     sol.query(sql, arguments);
@@ -812,6 +826,7 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
                                 values.put("price_unit", obj.getDouble("price_unit"));
                                 values.put("price_subtotal", obj.getDouble("price_subtotal"));
                                 values.put("price_total", obj.getDouble("price_total"));
+                                values.put("virtual_available", obj.getDouble("virtual_available"));
                                 if (extra != null)
                                     values.put("order_id", extra.getInt("id"));
                                 items.add(values.toDataRow());

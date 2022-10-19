@@ -64,6 +64,7 @@
     <string name="label_sale_detail_taxes">Татвар:</string>
     <string name="label_sale_detail_total">Нийт дүн:</string>
     <string name="label_sale_detail_balance_amount">Төлбөрийн үлдэгдэл:</string>
+    <string name="label_sale_order_line_virtual_available">Боломжит тоо</string>
     <string name="label_sale_order_line_quantity">Тоо ширхэг</string>
     <string name="label_sale_order_line_unit_price">Нэгж үнэ</string>
     <string name="label_sale_order_line_sub_total">Нийт</string>

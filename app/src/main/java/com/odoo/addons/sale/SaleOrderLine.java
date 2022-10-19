@@ -27,6 +27,7 @@ public class SaleOrderLine extends OModel {
     OColumn price_total = new OColumn("Total", OFloat.class);
     OColumn order_id = new OColumn("ID", SaleOrder.class, OColumn.RelationType.ManyToOne);
     OColumn product_uom = new OColumn("Product Measure", UomUom.class, OColumn.RelationType.ManyToOne);
+    OColumn virtual_available = new OColumn("Available", OFloat.class).setDefaultValue(-100);
 
     public SaleOrderLine(Context context, OUser user) {
         super(context, "sale.order.line", user);
