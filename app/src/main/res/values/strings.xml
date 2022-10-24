@@ -89,4 +89,9 @@
     <string name="alert_choose_no">Үгүй</string>
     <string name="toast_error_regist_item">Бараа бүртгэхэд алдаа гарлаа</string>
     <string name="title_activity_add_product_line_wizard">Бараа бүтээгдэхүүн</string>
+
+
+    <string name="statement_state_open">Шинэ</string>
+    <string name="statement_state_posted">Нээгдсэн</string>
+    <string name="statement_state_confirm">Хаагдсан</string>
 </resources>

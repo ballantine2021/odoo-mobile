@@ -19,6 +19,7 @@
  */
 package com.odoo.config;
 
+import com.odoo.addons.account.BankStatements;
 import com.odoo.addons.customers.Customers;
 import com.odoo.addons.sale.Sales;
 import com.odoo.addons.stock.ProductInfo;
@@ -36,6 +37,7 @@ public class Addons extends AddonsHelper {
      * OAddon partners = new OAddon(Partners.class).withSequence(2);
      */
     OAddon quotations = new OAddon(Sales.class).withSequence(1).setDefault();
+    OAddon bankStatements = new OAddon(BankStatements.class).withSequence(1).setDefault();
     OAddon productInfo = new OAddon(ProductInfo.class).withSequence(2);
     OAddon customers = new OAddon(Customers.class).withSequence(3);
 }

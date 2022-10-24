@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp"
+    android:paddingLeft="@dimen/default_16dp"
+    android:paddingRight="@dimen/default_16dp"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_height="wrap_content">
+
+
+        <TextView
+            android:id="@+id/name"
+            android:textAppearance="?android:textAppearanceSmall"
+            android:textColor="#E6AD5E"
+            android:fontFamily="@string/font_normal"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:layout_marginRight="5dp"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:text="StatementID"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/date"
+            android:textAppearance="?android:textAppearanceSmall"
+            android:textColor="@color/theme_secondary"
+            android:textStyle="bold"
+            android:fontFamily="@string/font_condensed"
+            android:layout_width="wrap_content"
+            android:text="Date"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/journal_name"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:fontFamily="sans-serif-condensed"
+        android:textColor="#000"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="#aaa"
+        android:dividerPadding="5dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/state"
+            android:textAppearance="?android:textAppearanceSmall"
+            android:textColor="#FFFFFF"
+            android:paddingRight="4dp"
+            android:paddingLeft="4dp"
+            android:fontFamily="@string/font_normal"
+            android:layout_alignParentLeft="true"
+            android:text="төлөв"
+            android:background="@color/theme_primary"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/amount_total"
+                android:textAppearance="?android:textAppearanceSmall"
+                android:textColor="@color/cardview_dark_background"
+                android:fontFamily="@string/font_normal"
+                android:layout_width="wrap_content"
+                android:textStyle="bold"
+                android:layout_gravity="right"
+                android:text="Гүйлгээ"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/currency_symbol"
+                android:textAppearance="?android:textAppearanceSmall"
+                android:textColor="@color/cardview_dark_background"
+                android:textStyle="bold"
+                android:layout_gravity="right"
+                android:fontFamily="@string/font_normal"
+                android:layout_width="wrap_content"
+                android:text="$"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>
