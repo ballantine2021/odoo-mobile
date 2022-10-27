@@ -5,9 +5,10 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+
 import com.odoo.R;
 import com.odoo.base.addons.res.ResPartner;
 import com.odoo.core.orm.ODataRow;
@@ -88,14 +89,12 @@ public class BankStatementsDetail extends AppCompatActivity {
         mAdapter.notifyDataSetChanged(objects);
     }
 
-    @Override
-    public void onBackPressed() {
-        finish();
-    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return true;
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public static class OActionBarUtils {

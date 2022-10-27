@@ -104,11 +104,11 @@ public class OdooLogin extends AppCompatActivity implements View.OnClickListener
         mSelfHostedURL = true;
         edtSelfHosted.setOnFocusChangeListener(this);
         edtSelfHosted.requestFocus();
-        edtSelfHosted.setText("192.168.0.199:8088");
+//        edtSelfHosted.setText("192.168.0.199:8088");
         edtUsername = (EditText) findViewById(R.id.edtUserName);
         edtPassword = (EditText) findViewById(R.id.edtPassword);
-        edtUsername.setText("user1");
-        edtPassword.setText("user1");
+//        edtUsername.setText("user1");
+//        edtPassword.setText("user1");
     }
 
     private void startOdooActivity() {

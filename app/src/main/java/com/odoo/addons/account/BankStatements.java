@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,7 +11,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -47,7 +45,6 @@ import com.odoo.core.utils.OCursorUtils;
 import com.odoo.core.utils.ODateUtils;
 import com.odoo.core.utils.OPreferenceManager;
 import com.odoo.core.utils.OResource;
-import com.odoo.core.utils.sys.IOnBackPressListener;
 import com.odoo.libs.calendar.SysCal;
 import com.odoo.libs.calendar.view.OdooCalendar;
 
@@ -64,7 +61,7 @@ import java.util.Locale;
 
 public class BankStatements extends BaseFragment implements OCursorListAdapter.OnViewBindListener,
         ISyncStatusObserverListener,
-        LoaderManager.LoaderCallbacks<Cursor>, IOnItemClickListener, View.OnClickListener, IOnSearchViewChangeListener,
+        LoaderManager.LoaderCallbacks<Cursor>, IOnItemClickListener, IOnSearchViewChangeListener,
         OdooCalendar.OdooCalendarDateSelectListener, IOdooConnectionListener {
 
     private static final String TAG = BankStatements.class.getSimpleName();
@@ -76,11 +73,8 @@ public class BankStatements extends BaseFragment implements OCursorListAdapter.O
     private AccountBankStatementLine absl;
     private AccountJournal aj;
     private View calendarView = null;
-    private ListView statementList;
-    private OdooCalendar odooCalendar;
     private final Date date = new Date();
     private String mFilterDate = date.toString();
-    private List<ODataRow> statements ;
     private ProgressDialog pd;
     private DecimalFormat decimalFormat;
 
@@ -106,7 +100,7 @@ public class BankStatements extends BaseFragment implements OCursorListAdapter.O
         absl = new AccountBankStatementLine(getContext(), null);
         aj = new AccountJournal(getContext(), null);
 
-        odooCalendar = (OdooCalendar) view.findViewById(R.id.dashboard_bank_statement);
+        OdooCalendar odooCalendar = (OdooCalendar) view.findViewById(R.id.dashboard_bank_statement);
         odooCalendar.setOdooCalendarDateSelectListener(this);
     }
 
@@ -129,9 +123,8 @@ public class BankStatements extends BaseFragment implements OCursorListAdapter.O
     public View getEventsView(ViewGroup viewGroup, SysCal.DateInfo dateInfo) {
         calendarView = LayoutInflater.from(getActivity()).inflate(R.layout.bank_statement_list,
                 viewGroup, false);
-        statementList = (ListView) calendarView.findViewById(R.id.items_container);
+        ListView statementList = (ListView) calendarView.findViewById(R.id.items_container);
         mFilterDate = dateInfo.getDateString();
-        setHasFloatingButton(mView, R.id.fabButton, statementList, this);
         mAdapter = new OCursorListAdapter(getActivity(), null, R.layout.bank_statement_list_item);
         mAdapter.setOnViewBindListener(this);
         statementList.setAdapter(mAdapter);
@@ -166,7 +159,7 @@ public class BankStatements extends BaseFragment implements OCursorListAdapter.O
         @Override
         protected Void doInBackground(ODataRow... params) {
             ODomain statementDomain = new ODomain();
-            ArrayList arrayList = new ArrayList();
+            ArrayList<String> arrayList = new ArrayList<>();
             arrayList.add("bank");
             arrayList.add("cash");
             statementDomain.add("allowed_user_id", "=", user().getUserId());
@@ -374,18 +367,14 @@ public class BankStatements extends BaseFragment implements OCursorListAdapter.O
     }
 
     void checkConnection(){
-        if (inNetwork()) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Odoo.createInstance(getContext(), user().getHost()).setOnConnect(BankStatements.this);
-                    } catch (OdooVersionException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }, 500);
-        } else {
+        if (inNetwork()) new Handler().postDelayed(() -> {
+            try {
+                Odoo.createInstance(getContext(), user().getHost()).setOnConnect(BankStatements.this);
+            } catch (OdooVersionException e) {
+                e.printStackTrace();
+            }
+        }, 500);
+        else {
             hideRefreshingProgress();
             Toast.makeText(getActivity(), _s(R.string.toast_network_required), Toast.LENGTH_LONG)
                     .show();
@@ -394,17 +383,17 @@ public class BankStatements extends BaseFragment implements OCursorListAdapter.O
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String where = "";
+        String where = "date(date) >= ? AND date(date) <= ?";
         List<String> arguments = new ArrayList<>();
         arguments.add(mFilterDate);
-
-        where = "date(date) >= ? AND date(date) <= ?";
         arguments.add(mFilterDate);
+
         if (mFilter != null) {
-            where += " AND name LIKE ? ";
+            where += " AND (name LIKE ? or journal_name LIKE ?)";
+            arguments.add("%" + mFilter + "%");
             arguments.add("%" + mFilter + "%");
         }
-        return new CursorLoader(getActivity(), db().uri(),null,where,arguments.toArray(new String[arguments.size()]),"name desc");
+        return new CursorLoader(getActivity(), db().uri(),null,where,arguments.toArray(new String[0]),"name desc");
     }
 
     @Override
@@ -412,20 +401,14 @@ public class BankStatements extends BaseFragment implements OCursorListAdapter.O
         try {
             if (data.getCount() > 0) {
                 mAdapter.changeCursor(data);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        OControls.setGone(mView, R.id.loadingProgress);
-                        OControls.setVisible(calendarView, R.id.items_container);
-                    }
+                new Handler().postDelayed(() -> {
+                    OControls.setGone(mView, R.id.loadingProgress);
+                    OControls.setVisible(calendarView, R.id.items_container);
                 }, 500);
             } else {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        OControls.setGone(mView, R.id.loadingProgress);
-                        OControls.setGone(calendarView, R.id.items_container);
-                    }
+                new Handler().postDelayed(() -> {
+                    OControls.setGone(mView, R.id.loadingProgress);
+                    OControls.setGone(calendarView, R.id.items_container);
                 }, 500);
             }
 
@@ -433,9 +416,10 @@ public class BankStatements extends BaseFragment implements OCursorListAdapter.O
             TextView statementBalance = (TextView) calendarView.findViewById(R.id.DayBalance);
             float statementDayBalance = 0.f;
             String where = "";
+            List<ODataRow> statements;
             if (mFilter != null) {
-                where += " AND (name = ?)";
-                statements = abs.query( "SELECT balance_end - balance_start as amount_total FROM account_bank_statement WHERE date(date) >=  ? AND date(date) <= ?" + where, new String[]{mFilterDate, mFilterDate, "%" + mFilter + "%"});
+                where += " AND ((name like ?) OR (journal_name like ?))";
+                statements = abs.query( "SELECT balance_end - balance_start as amount_total FROM account_bank_statement WHERE date(date) >=  ? AND date(date) <= ?" + where, new String[]{mFilterDate, mFilterDate, "%" + mFilter + "%", "%" + mFilter + "%"});
             }else {
                 statements = abs.query( "SELECT balance_end - balance_start as amount_total FROM account_bank_statement WHERE date(date) >=  ? AND date(date) <= ?", new String[]{mFilterDate, mFilterDate});
             }
@@ -470,12 +454,6 @@ public class BankStatements extends BaseFragment implements OCursorListAdapter.O
         IntentUtils.startActivity(getActivity(), BankStatementsDetail.class, data);
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-        }
-    }
-
 
     public List<ODrawerItem> drawerMenus(Context context) {
         OUser user = OUser.current(context);
@@ -486,8 +464,8 @@ public class BankStatements extends BaseFragment implements OCursorListAdapter.O
             String role = sharedPreferences.getString("account-userId-"+user.getUserId(), "false");
             if (role.equals("true")) {
                 List<ODrawerItem> items = new ArrayList<>();
-                items.add(new ODrawerItem(TAG).setTitle("Төлбөрүүд")
-                        .setIcon(R.drawable.ic_action_message)
+                items.add(new ODrawerItem(TAG).setTitle(context.getString(R.string.title_activity_bank_statement))
+                        .setIcon(R.drawable.ic_action_payment_list2)
                         .setInstance(new BankStatements()));
                 return items;
             }
