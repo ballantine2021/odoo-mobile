@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,10 +15,10 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -26,7 +27,6 @@ import android.widget.Toast;
 
 import com.odoo.App;
 import com.odoo.R;
-import com.odoo.addons.account.AccountPaymentTerm;
 import com.odoo.addons.stock.ProductProduct;
 import com.odoo.addons.stock.StockWarehouse;
 import com.odoo.addons.stock.UomUom;
@@ -85,19 +85,14 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
     private ProductProduct pp = null;
     private Sales.Type mType;
     private App app;
-    private OField name;
     private OField partner_id;
-    private OField date_order;
     private OUser user;
     private Context context;
-    private String currencySymbol;
-    private ResCurrency rc;
     private UomUom uu;
     private DecimalFormat decimalFormat1;
     private DecimalFormat decimalFormat2;
-    private int row_id = OModel.INVALID_ROW_ID;
+    private final int row_id = OModel.INVALID_ROW_ID;
     private Menu mMenu;
-    private String curSymbol = "";
 
     private enum SyncType {SaveSync, ProductChange}
     private SyncType sType = SyncType.ProductChange;
@@ -115,7 +110,6 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
         sol = new SaleOrderLine(context, user);
         pp = new ProductProduct(context, user);
         uu = new UomUom(context, user);
-        rc = new ResCurrency(context,user);
 
         extra = getIntent().getExtras();
         oForm = (OForm) findViewById(R.id.saleForm);
@@ -128,17 +122,12 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
     }
 
     private void init() {
-//        name = (OField) oForm.findViewById(R.id.fname);
         partner_id = (OField) findViewById(R.id.partnerId);
-        date_order = (OField) findViewById(R.id.dateOrder);
 
         TextView currency1 = (TextView) findViewById(R.id.currency1);
         TextView currency2 = (TextView) findViewById(R.id.currency2);
         TextView currency3 = (TextView) findViewById(R.id.currency3);
-        currencySymbol = null;
-        for (ODataRow row : rc.query("SELECT symbol FROM res_currency limit 1")){
-            curSymbol = row.getString("symbol");
-        }
+        String currencySymbol = null;
         untaxed_Amt = (TextView) findViewById(R.id.untaxedTotal);
         taxes_Amt = (TextView) findViewById(R.id.taxesTotal);
         total_Amt = (TextView) findViewById(R.id.fTotal);
@@ -174,7 +163,7 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
             try {
                 oForm.initForm(record);
             }catch (Exception e){
-
+                Log.d(TAG, "init: " + e);
             }
         }
         currency1.setText(currencySymbol);
@@ -200,11 +189,13 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
                         | InputType.TYPE_NUMBER_FLAG_DECIMAL);
                 inputView.setText(String.valueOf(quantity));
                 if (quantity > 0.1f) {
-                    inputView.setText(quantity+"");
+                    inputView.setText(String.valueOf(quantity));
                     inputView.setSelection(String.valueOf(quantity).length());
                 }
                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                if (imm != null) {
+                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                }
             }
 
             @Override
@@ -221,12 +212,9 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
     }
 
     private void initAdapter() {
-        partner_id.setOnValueChangeListener(new OField.IOnFieldValueChangeListener() {
-            @Override
-            public void onFieldValueChange(OField field, Object value) {
-                OnCustomerChangeUpdate onCustomerChangeUpdate = new OnCustomerChangeUpdate();
-                onCustomerChangeUpdate.execute(field.getValue().toString());
-            }
+        partner_id.setOnValueChangeListener((field, value) -> {
+            OnCustomerChangeUpdate onCustomerChangeUpdate = new OnCustomerChangeUpdate();
+            onCustomerChangeUpdate.execute(field.getValue().toString());
         });
         final ExpandableListControl mList = (ExpandableListControl) findViewById(R.id.expListOrderLine);
         mList.setVisibility(View.VISIBLE);
@@ -242,9 +230,7 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
             objects.addAll(lines);
         }
         mAdapter = mList.getAdapter(R.layout.sale_order_line_item, objects,
-            new ExpandableListControl.ExpandableListAdapterGetViewListener() {
-                @Override
-                public View getView(int position, View mView, ViewGroup parent) {
+                (position, mView, parent) -> {
                     final ODataRow row = (ODataRow) mAdapter.getItem(position);
                     List<ODataRow> productList = pp.query("SELECT _id, id, name, default_code " +
                             "FROM product_product " +
@@ -252,26 +238,33 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
                     if(productList.size() > 0){
                         final int productServerID = productList.get(0).getInt("id");
                         OControls.setText(mView, R.id.edtName, (productList.get(0).getString("default_code").equals("false") ? productList.get(0).getString("name"): "[" + productList.get(0).getString("default_code") + "] ") + productList.get(0).getString("name"));
+                        if (row.getFloat("virtual_available") != -100)
+                            OControls.setText(mView, R.id.edtVirtualAvailable, decimalFormat2.format(row.getFloat("virtual_available")));
+                        else
+                            OControls.setText(mView, R.id.edtVirtualAvailable, decimalFormat2.format(0.0));
+
                         OControls.setText(mView, R.id.edtProductQty, decimalFormat2.format(row.getFloat("product_uom_qty")));
+                        if (row.getFloat("virtual_available") != -100){
+                            if (row.getFloat("virtual_available") < row.getFloat("product_uom_qty"))
+                                OControls.setTextColor(mView, R.id.edtProductQty, Color.RED);
+                        }
+
                         OControls.setText(mView, R.id.edtProductPrice, decimalFormat1.format(row.getFloat("price_unit")));
                         OControls.setText(mView, R.id.edtSubTotal,  decimalFormat1.format(row.getFloat("price_total")));
-                        mView.setOnLongClickListener(new View.OnLongClickListener(){
-                            @Override
-                            public boolean onLongClick(View v) {
-                                if (extra == null || !extra.containsKey(OColumn.ROW_ID)) {
-                                    onLongClicked(productServerID);
-                                }
-                                else {
-                                    if(record != null && record.contains("state") && (record.getString("state").equals("draft") || record.getString("state").equals("cancel")))
-                                        onLongClicked(productServerID);
-                                }
-                                return true;
+
+                        mView.setOnLongClickListener(v -> {
+                            if (extra == null || !extra.containsKey(OColumn.ROW_ID)) {
+                                onLongClicked(productServerID);
                             }
+                            else {
+                                if(record != null && record.contains("state") && (record.getString("state").equals("draft") || record.getString("state").equals("cancel")))
+                                    onLongClicked(productServerID);
+                            }
+                            return true;
                         });
                     }
                     return mView;
-                }
-            });
+                });
         mAdapter.notifyDataSetChanged(objects);
     }
 
@@ -314,20 +307,17 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.layoutAddItem: {
-                if(!partner_id.getValue().toString().equals("-1")){
-                    Intent intent = new Intent(context, AddProductLineWizard.class);
-                    Bundle extra = new Bundle();
-                    for (String key : lineValues.keySet()) {
-                        extra.putFloat(key, lineValues.get(key));
+        if (view.getId() == R.id.layoutAddItem) {
+            if (!partner_id.getValue().toString().equals("-1")) {
+                Intent intent = new Intent(context, AddProductLineWizard.class);
+                Bundle extra = new Bundle();
+                for (String key : lineValues.keySet()) {
+                    extra.putFloat(key, lineValues.get(key));
 
-                    }
-                    intent.putExtras(extra);
-                    intent.putExtra("partner_id", (Integer) partner_id.getValue());
-                    startActivityForResult(intent, REQUEST_ADD_ITEMS);
                 }
-                break;
+                intent.putExtras(extra);
+                intent.putExtra("partner_id", (Integer) partner_id.getValue());
+                startActivityForResult(intent, REQUEST_ADD_ITEMS);
             }
         }
     }
@@ -336,12 +326,9 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
     public void onBackPressed() {
         if (oForm.getEditable()) {
             showConfirmCustomer(this, OResource.string(this, R.string.close_activity),
-                    new OAlert.OnAlertConfirmListener() {
-                        @Override
-                        public void onConfirmChoiceSelect(OAlert.ConfirmType type) {
-                            if (type == OAlert.ConfirmType.POSITIVE) {
-                                finish();
-                            }
+                    type -> {
+                        if (type == OAlert.ConfirmType.POSITIVE) {
+                            finish();
                         }
                     });
         } else {
@@ -406,26 +393,17 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
         builder.setTitle(context.getResources().getString(R.string.label_warning));
         builder.setCancelable(true);
         builder.setMessage(message);
-        builder.setPositiveButton(context.getResources().getString(R.string.alert_choose_yes), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (listener != null) {
-                    listener.onConfirmChoiceSelect(OAlert.ConfirmType.POSITIVE);
-                }
+        builder.setPositiveButton(context.getResources().getString(R.string.alert_choose_yes), (dialog, which) -> {
+            if (listener != null) {
+                listener.onConfirmChoiceSelect(OAlert.ConfirmType.POSITIVE);
             }
         });
-        builder.setNegativeButton(context.getResources().getString(R.string.alert_choose_no), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (listener != null) {
-                    listener.onConfirmChoiceSelect(OAlert.ConfirmType.NEGATIVE);
-                }
+        builder.setNegativeButton(context.getResources().getString(R.string.alert_choose_no), (dialog, which) -> {
+            if (listener != null) {
+                listener.onConfirmChoiceSelect(OAlert.ConfirmType.NEGATIVE);
             }
         });
-        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-            }
+        builder.setOnCancelListener(dialog -> {
         });
         builder.create().show();
     }
@@ -469,10 +447,9 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
 
     private class  OnSaleOrderSync extends AsyncTask<Integer, Void, Integer> {
         private ProgressDialog progressDialog;
-        private ResPartner rp = new ResPartner(getBaseContext(), null);
-        private ResUsers ru = new ResUsers(getBaseContext(), null);
-        private StockWarehouse swh = new StockWarehouse(getBaseContext(), null);
-        private ResCurrency rc = new ResCurrency(getBaseContext(), null);
+        private final ResPartner rp = new ResPartner(getBaseContext(), null);
+        private final ResUsers ru = new ResUsers(getBaseContext(), null);
+        private final ResCurrency rc = new ResCurrency(getBaseContext(), null);
         private boolean success = false;
         private String message = "";
 
@@ -494,7 +471,6 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
                 int partner_server_id = -1;
                 if (!values.getString("partner_id").equals("false")) {
                     partner_server_id = rp.selectServerId(values.getInt("partner_id"));
-                    ODataRow oDataRow = rp.browse(values.getInt("partner_id"));
                 }
 
                 for (Object line : objects) {
@@ -504,7 +480,7 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
                     o_line.put((lineIds.containsKey(product_id)) ? 1 : 0);
                     o_line.put((lineIds.containsKey(product_id)) ? lineIds.get(product_id) : false);
                     JSONObject line_data = new JSONObject();
-                    if (lineIds.containsKey(product_id)) {
+                    if(lineIds.containsKey(product_id)) {
                         line_data.put("product_uom_qty", row.get("product_uom_qty"));
                         o_line.put(line_data);
                     } else {
@@ -642,7 +618,7 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
 
                             if (obj.getJSONArray("order_line").length() > 0) {
                                 int order_id;
-                                final int COLUMNS_SIZE = 10;
+                                final int COLUMNS_SIZE = 11;
                                 final int MAX_ROW = 999 / COLUMNS_SIZE;
                                 List<ODataRow> saleOrderList = so.query("SELECT _id FROM sale_order WHERE id = ?", new String[]{obj.getString("id")});
                                 if(saleOrderList.size() > 0){
@@ -656,7 +632,7 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
                                         if (counter == MAX_ROW || order_line_sale.length() - 1 == l) {
                                             counter = 0;
                                             String sql = "INSERT INTO sale_order_line (id, product_id, name, product_uom_qty, price_unit, " +
-                                                    "price_tax, price_subtotal, price_total, order_id, product_uom) " +
+                                                    "price_tax, price_subtotal, price_total, order_id, product_uom, virtual_available) " +
                                                     "VALUES ";
                                             String[] arguments = new String[]{};
                                             for (int j = 0; j < tempList.size(); j++) {
@@ -717,6 +693,7 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
                                                 arguments[j * COLUMNS_SIZE + 7] = tempList.get(j).getString("price_total");
                                                 arguments[j * COLUMNS_SIZE + 8] = String.valueOf(order_id);
                                                 arguments[j * COLUMNS_SIZE + 9] = product_uom;
+                                                arguments[j * COLUMNS_SIZE + 10] = tempList.get(j).getString("virtual_available");
 
                                                 if (j % MAX_ROW == MAX_ROW - 1 || (j == tempList.size() - 1)) {
                                                     sol.query(sql, arguments);
@@ -731,6 +708,7 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
                     }
                 }
             }catch (Exception e){
+                Log.d(TAG, "doInBackground: " + e);
             }
             return params[0];
         }
@@ -813,6 +791,7 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
                                 values.put("price_unit", obj.getDouble("price_unit"));
                                 values.put("price_subtotal", obj.getDouble("price_subtotal"));
                                 values.put("price_total", obj.getDouble("price_total"));
+                                values.put("virtual_available", obj.getDouble("virtual_available"));
                                 if (extra != null)
                                     values.put("order_id", extra.getInt("id"));
                                 items.add(values.toDataRow());
@@ -823,41 +802,31 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
                 else
                 {
                     Handler handler1 = new Handler(Looper.getMainLooper());
-                    handler1.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(resultObj.has("error")) {
-                                try {
-                                    JSONObject errorObject = new JSONObject(resultObj.getString("error"));
-                                    if(errorObject.has("data")){
-                                        final JSONObject dataObject = new JSONObject(errorObject.getString("data"));
-                                        if(dataObject.has("message")) {
-                                            runOnUiThread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    try {
-                                                        Toast.makeText(getApplicationContext(), "" + dataObject.getString("message"), Toast.LENGTH_LONG).show();
-                                                    } catch (JSONException e) {
-                                                        e.printStackTrace();
-                                                    }
-                                                }
-                                            });
-                                        }
+                    handler1.post(() -> {
+                        if(resultObj.has("error")) {
+                            try {
+                                JSONObject errorObject = new JSONObject(resultObj.getString("error"));
+                                if(errorObject.has("data")){
+                                    final JSONObject dataObject = new JSONObject(errorObject.getString("data"));
+                                    if(dataObject.has("message")) {
+                                        runOnUiThread(() -> {
+                                            try {
+                                                Toast.makeText(getApplicationContext(), "" + dataObject.getString("message"), Toast.LENGTH_LONG).show();
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+                                        });
                                     }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
                                 }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
                         }
                     });
                 }
 
             } catch (Exception e) {
-                SalesDetail.this.runOnUiThread(new Runnable() {
-                    public void run() {
-                    Toast.makeText(SalesDetail.this, R.string.toast_error_regist_item, Toast.LENGTH_LONG).show();
-                    }
-                });
+                SalesDetail.this.runOnUiThread(() -> Toast.makeText(SalesDetail.this, R.string.toast_error_regist_item, Toast.LENGTH_LONG).show());
             }
             return items;
         }
@@ -883,6 +852,7 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
                 activity.setSupportActionBar(toolbar);
                 ActionBar actionBar = activity.getSupportActionBar();
                 if (withHomeButtonEnabled) {
+                    assert actionBar != null;
                     actionBar.setHomeButtonEnabled(true);
                     actionBar.setDisplayHomeAsUpEnabled(true);
                 }

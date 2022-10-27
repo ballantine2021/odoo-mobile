@@ -23,13 +23,13 @@
 
 
             <TextView
-                android:id="@+id/edtName"
+                android:id="@+id/bankStatementLinePartner"
                 android:textSize="@dimen/text_size_large"
                 android:textColor="@color/body_text_1"
                 android:layout_width="wrap_content"
                 android:fontFamily="@string/font_normal"
                 android:singleLine="true"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -43,7 +43,7 @@
                     android:layout_width="0dp"
                     android:orientation="vertical"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.3">
+                    android:layout_weight="0.25">
 
                     <TextView
                         android:layout_width="match_parent"
@@ -53,23 +53,22 @@
                         android:fontFamily="@string/font_condensed"
                         android:textColor="@color/body_text_3"
                         android:layout_height="wrap_content"
-                        android:text="@string/label_sale_order_line_virtual_available" />
+                        android:text="@string/label_bank_statement_line_date" />
 
                     <TextView
-                        android:id="@+id/edtVirtualAvailable"
+                        android:id="@+id/bankStatementLineDate"
                         android:layout_width="match_parent"
-                        android:gravity="right"
+                        android:gravity="left"
                         android:layout_marginRight="@dimen/default_8dp"
                         android:textColor="@color/body_text_2"
                         android:layout_height="wrap_content" />
                 </LinearLayout>
-
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:orientation="vertical"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.3">
+                    android:layout_weight="0.45">
 
                     <TextView
                         android:layout_width="match_parent"
@@ -79,67 +78,40 @@
                         android:fontFamily="@string/font_condensed"
                         android:textColor="@color/body_text_3"
                         android:layout_height="wrap_content"
-                        android:text="@string/label_sale_order_line_quantity" />
+                        android:text="@string/label_bank_statement_line_ref" />
 
                     <TextView
-                        android:id="@+id/edtProductQty"
+                        android:id="@+id/bankStatementLineRef"
+                        android:layout_width="match_parent"
+                        android:gravity="left"
+                        android:layout_marginRight="@dimen/default_8dp"
+                        android:textColor="@color/body_text_2"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="0.3"
+                    android:orientation="vertical"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:textAllCaps="true"
+                        android:textSize="@dimen/text_size_small"
+                        android:gravity="center"
+                        android:fontFamily="@string/font_condensed"
+                        android:textColor="@color/body_text_3"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_bank_statement_line_amount" />
+
+                    <TextView
+                        android:id="@+id/bankStatementLineAmount"
                         android:layout_width="match_parent"
                         android:textSize="@dimen/text_size_medium"
                         android:gravity="right"
                         android:layout_marginRight="@dimen/default_8dp"
                         android:textColor="@color/body_text_1"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_weight="0.35"
-                    android:orientation="vertical"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:textAllCaps="true"
-                        android:textSize="@dimen/text_size_small"
-                        android:gravity="center"
-                        android:fontFamily="@string/font_condensed"
-                        android:textColor="@color/body_text_3"
-                        android:layout_height="wrap_content"
-                        android:text="@string/label_sale_order_line_unit_price" />
-
-                    <TextView
-                        android:id="@+id/edtProductPrice"
-                        android:layout_width="match_parent"
-                        android:textSize="@dimen/text_size_medium"
-                        android:gravity="right"
-                        android:layout_marginRight="@dimen/default_8dp"
-                        android:textColor="@color/body_text_2"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_weight="0.35"
-                    android:orientation="vertical"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:gravity="center"
-                        android:textAllCaps="true"
-                        android:textSize="@dimen/text_size_small"
-                        android:fontFamily="@string/font_condensed"
-                        android:textColor="@color/body_text_3"
-                        android:layout_height="wrap_content"
-                        android:text="@string/label_sale_order_line_sub_total" />
-
-                    <TextView
-                        android:id="@+id/edtSubTotal"
-                        android:layout_width="match_parent"
-                        android:gravity="right"
-                        android:layout_marginRight="@dimen/default_8dp"
-                        android:textSize="@dimen/text_size_medium"
-                        android:textColor="@color/body_text_2"
                         android:layout_height="wrap_content" />
                 </LinearLayout>
             </LinearLayout>

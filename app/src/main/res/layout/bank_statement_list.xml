@@ -40,22 +40,6 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:textAppearanceSmall"
                 android:textColor="#FFFFFF"
-                android:text="@string/label_sale_order_count"/>
-
-            <TextView
-                android:id="@+id/salesCount"
-                android:layout_width="wrap_content"
-                android:textAppearance="?android:textAppearanceSmall"
-                android:layout_height="wrap_content"
-                android:textColor="#FFFFFF"
-                android:paddingLeft="8dp"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:textAppearanceSmall"
-                android:textColor="#FFFFFF"
                 android:paddingLeft="8dp"
                 android:text="@string/label_total_amount"/>
 

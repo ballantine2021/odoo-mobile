@@ -64,6 +64,7 @@
     <string name="label_sale_detail_taxes">Татвар:</string>
     <string name="label_sale_detail_total">Нийт дүн:</string>
     <string name="label_sale_detail_balance_amount">Төлбөрийн үлдэгдэл:</string>
+    <string name="label_sale_order_line_virtual_available">Боломжит тоо</string>
     <string name="label_sale_order_line_quantity">Тоо ширхэг</string>
     <string name="label_sale_order_line_unit_price">Нэгж үнэ</string>
     <string name="label_sale_order_line_sub_total">Нийт</string>
@@ -88,4 +89,19 @@
     <string name="alert_choose_no">Үгүй</string>
     <string name="toast_error_regist_item">Бараа бүртгэхэд алдаа гарлаа</string>
     <string name="title_activity_add_product_line_wizard">Бараа бүтээгдэхүүн</string>
+
+
+    <string name="statement_state_open">Шинэ</string>
+    <string name="statement_state_posted">Нээгдсэн</string>
+    <string name="statement_state_confirm">Хаагдсан</string>
+
+    <string name="label_bank_statement_detail_journal">Журнал</string>
+    <string name="label_bank_statement_detail_date">Огноо</string>
+    <string name="label_bank_statement_line_not_partner">Харилцагч олдоогүй</string>
+    <string name="label_bank_statement_line_date">Огноо</string>
+    <string name="label_bank_statement_line_ref">Гүйлгээний утга</string>
+    <string name="label_bank_statement_line_amount">Дүн</string>
+
+    <string name="title_activity_bank_statement">Төлбөрийн жагсаалт</string>
+    <string name="title_activity_bank_statement_regist">Төлбөрийн бүртгэл</string>
 </resources>

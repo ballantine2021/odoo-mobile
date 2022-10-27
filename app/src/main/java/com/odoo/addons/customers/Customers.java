@@ -182,28 +182,13 @@ public class Customers extends BaseFragment implements ISyncStatusObserverListen
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mAdapter.changeCursor(data);
-
         footerCount.setText(getString(R.string.label_footer_count) + data.getCount() + " " + getString(R.string.title_activity_customer));
-        if (data.getCount() > 0) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    OControls.setGone(mView, R.id.loadingProgress);
-                    OControls.setVisible(mView, R.id.swipe_container);
-                    OControls.setGone(mView, R.id.data_list_no_item);
-                }
-            }, 500);
-        } else {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    OControls.setGone(mView, R.id.loadingProgress);
-                    OControls.setImage(mView, R.id.icon, R.drawable.ic_action_customers);
-                    OControls.setText(mView, R.id.title, _s(R.string.label_no_customer_found));
-                    OControls.setText(mView, R.id.subTitle, "");
-                }
-            }, 500);
-        }
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                OControls.setGone(mView, R.id.loadingProgress);
+            }
+        }, 500);
     }
 
     @Override

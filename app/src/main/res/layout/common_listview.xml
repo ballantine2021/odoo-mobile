@@ -11,30 +11,15 @@
         android:layout_above="@+id/footerLayout"
         android:orientation="vertical">
 
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/data_list_no_item"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone">
-
-            <include layout="@layout/base_no_items_view" />
-        </android.support.v4.widget.SwipeRefreshLayout>
-
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/swipe_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone">
-
-            <ListView
-                android:id="@+id/listview"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent" />
-        </android.support.v4.widget.SwipeRefreshLayout>
-
         <include
             android:id="@+id/loadingProgress"
             layout="@layout/listview_data_loading_progress" />
+
+        <ListView
+            android:id="@+id/listview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" />
+
     </LinearLayout>
 
     <LinearLayout

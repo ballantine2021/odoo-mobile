@@ -21,6 +21,7 @@ package com.odoo.core.support.list;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -134,6 +135,8 @@ public class OCursorListAdapter extends CursorAdapter implements
                 }
             }, 100);
         }
+        if (position % 2 == 0)
+            view.setBackgroundColor(Color.parseColor("#F3F5F4"));
         return super.getView(position, view, viewGroup);
     }
 

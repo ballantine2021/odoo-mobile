@@ -4,18 +4,35 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../layout/custom_preview.xml" value="0.20833333333333334" />
+        <entry key="app/src/main/res/drawable-mdpi/circle_mask_secondary.xml" value="0.12864583333333332" />
         <entry key="app/src/main/res/drawable/circle_mask_third.xml" value="0.19791666666666666" />
+        <entry key="app/src/main/res/layout/activity_app_intro.xml" value="0.15052083333333333" />
         <entry key="app/src/main/res/layout/base_login.xml" value="0.18125" />
         <entry key="app/src/main/res/layout/base_no_items_view.xml" value="0.30833333333333335" />
         <entry key="app/src/main/res/layout/common_listview.xml" value="0.18125" />
         <entry key="app/src/main/res/layout/customer_row_item.xml" value="0.18125" />
+        <entry key="app/src/main/res/layout/listview_data_loading_progress.xml" value="0.1421875" />
         <entry key="app/src/main/res/layout/product_detail_items.xml" value="0.1" />
         <entry key="app/src/main/res/layout/product_list.xml" value="0.18177083333333333" />
         <entry key="app/src/main/res/layout/product_row_item.xml" value="0.18177083333333333" />
+        <entry key="app/src/main/res/layout/sale_add_item.xml" value="0.1125" />
+        <entry key="app/src/main/res/layout/sale_detail.xml" value="0.18489583333333334" />
+        <entry key="app/src/main/res/layout/sale_no_items_view.xml" value="0.15520833333333334" />
+        <entry key="app/src/main/res/layout/sale_order_dashboard.xml" value="0.15520833333333334" />
+        <entry key="app/src/main/res/layout/sale_order_dashboard_items.xml" value="0.14166666666666666" />
+        <entry key="app/src/main/res/layout/sale_order_item.xml" value="0.15520833333333334" />
+        <entry key="app/src/main/res/layout/sale_order_line_item.xml" value="0.18489583333333334" />
+        <entry key="app/src/main/res/layout/sale_product_line_item.xml" value="0.1125" />
         <entry key="app/src/main/res/layout/taxes_list_item.xml" value="0.18177083333333333" />
+        <entry key="app/src/main/res/menu/menu_cancel_sheet.xml" value="0.15520833333333334" />
         <entry key="app/src/main/res/menu/menu_customer_detail.xml" value="0.1" />
+        <entry key="app/src/main/res/menu/menu_order_sheet.xml" value="0.15520833333333334" />
+        <entry key="app/src/main/res/menu/menu_order_sheet_picking.xml" value="0.17083333333333334" />
         <entry key="app/src/main/res/menu/menu_partners.xml" value="0.18125" />
         <entry key="app/src/main/res/menu/menu_product_detail.xml" value="0.18177083333333333" />
+        <entry key="app/src/main/res/menu/menu_quotation_sheet.xml" value="0.15520833333333334" />
+        <entry key="app/src/main/res/menu/menu_sales_detail.xml" value="0.18489583333333334" />
+        <entry key="app/src/main/res/xml/base_preference.xml" value="0.1" />
       </map>
     </option>
   </component>
