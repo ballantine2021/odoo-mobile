@@ -44,6 +44,7 @@ import com.odoo.core.utils.OResource;
 import com.odoo.datas.OConstants;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -103,11 +104,11 @@ public class OdooLogin extends AppCompatActivity implements View.OnClickListener
         mSelfHostedURL = true;
         edtSelfHosted.setOnFocusChangeListener(this);
         edtSelfHosted.requestFocus();
-//        edtSelfHosted.setText("192.168.0.100:8088");
+        edtSelfHosted.setText("192.168.0.199:8088");
         edtUsername = (EditText) findViewById(R.id.edtUserName);
         edtPassword = (EditText) findViewById(R.id.edtPassword);
-//        edtUsername.setText("admin");
-//        edtPassword.setText("admin");
+        edtUsername.setText("user1");
+        edtPassword.setText("user1");
     }
 
     private void startOdooActivity() {
@@ -485,7 +486,7 @@ public class OdooLogin extends AppCompatActivity implements View.OnClickListener
                 OArguments args = new OArguments();
                 args.add("res.users");
                 ResUsers resUsers = new ResUsers(getApplicationContext(),null);
-                resultObject = resUsers.getServerDataHelper().callMethod("get_sale_user_role_mobile", args);
+                resultObject = resUsers.getServerDataHelper().callMethodCracker("get_user_role_mobile", args);
             }   catch (Exception e) {
                 e.printStackTrace();
             }
@@ -495,10 +496,28 @@ public class OdooLogin extends AppCompatActivity implements View.OnClickListener
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("SALE_USER_ROLE", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor1 = sharedPreferences.edit();
-            editor1.putString("userId-"+userId, result);
-            editor1.commit();
+
+            try {
+                JSONObject jsonObject = new JSONObject(result);
+                if(jsonObject.has("result")) {
+                    JSONObject roleObject = new JSONObject(jsonObject.getString("result"));
+                    SharedPreferences sharedPreferences1 = getApplicationContext().getSharedPreferences("SALE_USER_ROLE", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor1 = sharedPreferences1.edit();
+
+                    if(roleObject.has("sale")){
+                        editor1.putString("sale-userId-"+userId, roleObject.getString("sale"));
+                        editor1.commit();
+                    }
+                    SharedPreferences sharedPreferences2 = getApplicationContext().getSharedPreferences("ACCOUNT_USER_ROLE", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor2 = sharedPreferences2.edit();
+                    if(roleObject.has("account")){
+                        editor2.putString("account-userId-"+userId, roleObject.getString("account"));
+                        editor2.commit();
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

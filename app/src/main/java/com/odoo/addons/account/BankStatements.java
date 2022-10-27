@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -40,6 +41,7 @@ import com.odoo.core.support.addons.fragment.ISyncStatusObserverListener;
 import com.odoo.core.support.drawer.ODrawerItem;
 import com.odoo.core.support.list.IOnItemClickListener;
 import com.odoo.core.support.list.OCursorListAdapter;
+import com.odoo.core.utils.IntentUtils;
 import com.odoo.core.utils.OControls;
 import com.odoo.core.utils.OCursorUtils;
 import com.odoo.core.utils.ODateUtils;
@@ -339,7 +341,6 @@ public class BankStatements extends BaseFragment implements OCursorListAdapter.O
     public void onViewBind(View view, Cursor cursor, ODataRow row) {
         OControls.setText(view, R.id.name, row.get("name").equals("false") ? "" : row.get("name") );
         OControls.setText(view, R.id.date, ODateUtils.convertToDefault(row.getString("date"), ODateUtils.DEFAULT_DATE_FORMAT, "MMMM, dd"));
-
         OControls.setText(view, R.id.amount_total, decimalFormat.format((row.getFloat("balance_end")-row.getFloat("balance_start"))));
         switch (row.getString("state")){
             case "open":
@@ -356,11 +357,10 @@ public class BankStatements extends BaseFragment implements OCursorListAdapter.O
             OControls.setVisible(view, R.id.journal_name);
             OControls.setText(view, R.id.journal_name, row.getString("journal_name"));
         }
-        if (row.getString("currency_symbol").equals("false")) {
+        if(row.getString("currency_symbol").equals("false"))
             OControls.setGone(view, (R.id.currency_symbol));
-        } else {
+        else
             OControls.setText(view, R.id.currency_symbol, row.get("currency_symbol"));
-        }
     }
 
     public List<ODataRow> selectRowId2(OModel model, int server_id){
@@ -460,35 +460,31 @@ public class BankStatements extends BaseFragment implements OCursorListAdapter.O
     public void onItemDoubleClick(View view, int position) {
         ODataRow row = OCursorUtils.toDatarow((Cursor) mAdapter.getItem(position));
         Bundle data = row.getPrimaryBundleData();
-//        IntentUtils.startActivity(getActivity(), SalesDetail.class, data);
+        IntentUtils.startActivity(getActivity(), BankStatementsDetail.class, data);
     }
 
     @Override
     public void onItemClick(View view, int position) {
+        ODataRow row = OCursorUtils.toDatarow((Cursor) mAdapter.getItem(position));
+        Bundle data = row.getPrimaryBundleData();
+        IntentUtils.startActivity(getActivity(), BankStatementsDetail.class, data);
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.fabButton:
-                loadActivity(null);
-                break;
         }
     }
 
-    private void loadActivity(ODataRow row) {
-        Bundle data = row.getPrimaryBundleData();
-//        IntentUtils.startActivity(getActivity(), SalesDetail.class, data);
-    }
 
     public List<ODrawerItem> drawerMenus(Context context) {
         OUser user = OUser.current(context);
 
         IrModuleModule irModule = new IrModuleModule(context, null);
         if(irModule.select(null, "name = ?", new String[]{"mobile-backend"}).get(0).getString("state").equals("installed")) {
-            SharedPreferences sharedPreferences = context.getSharedPreferences("SALE_USER_ROLE", Context.MODE_PRIVATE);
-            String role = sharedPreferences.getString("userId-"+user.getUserId(), "false");
-            if (role.equals("sale_sales_man")) {
+            SharedPreferences sharedPreferences = context.getSharedPreferences("ACCOUNT_USER_ROLE", Context.MODE_PRIVATE);
+            String role = sharedPreferences.getString("account-userId-"+user.getUserId(), "false");
+            if (role.equals("true")) {
                 List<ODrawerItem> items = new ArrayList<>();
                 items.add(new ODrawerItem(TAG).setTitle("Төлбөрүүд")
                         .setIcon(R.drawable.ic_action_message)

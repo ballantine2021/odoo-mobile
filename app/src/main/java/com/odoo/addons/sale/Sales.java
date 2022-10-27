@@ -12,8 +12,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-//import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -851,13 +849,12 @@ public class Sales extends BaseFragment implements OCursorListAdapter.OnViewBind
 
     public List<ODrawerItem> drawerMenus(Context context) {
         OUser user = OUser.current(context);
-
         IrModuleModule irModule = new IrModuleModule(context, null);
         if(irModule.select(null, "name = ?", new String[]{"mobile-backend"}).get(0).getString("state").equals("installed")) {
             SharedPreferences sharedPreferences = context.getSharedPreferences("SALE_USER_ROLE", Context.MODE_PRIVATE);
-            String role = sharedPreferences.getString("userId-"+user.getUserId(), "false");
-            if (role.equals("sale_sales_man")) {
-                List<ODrawerItem> items = new ArrayList<>();
+            String role = sharedPreferences.getString("sale-userId-"+user.getUserId(), "false");
+            List<ODrawerItem> items = new ArrayList<>();
+            if (role.equals("true")) {
                 items.add(new ODrawerItem(TAG).setTitle(context.getString(R.string.title_activity_quotation))
                         .setIcon(R.drawable.ic_action_quotation)
                         .setExtra(extra(Type.Quotation))
@@ -869,7 +866,6 @@ public class Sales extends BaseFragment implements OCursorListAdapter.OnViewBind
                 return items;
             }
         }
-
         return null;
     }
 

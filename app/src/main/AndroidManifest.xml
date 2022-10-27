@@ -108,6 +108,12 @@
             android:windowSoftInputMode="adjustPan" />
 
         <activity
+            android:name="com.odoo.addons.account.BankStatementsDetail"
+            android:label="@string/title_activity_bank_statement"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+
+        <activity
             android:name="com.odoo.addons.sale.SalesDetail"
             android:label="@string/title_activity_sale_order"
             android:screenOrientation="portrait"

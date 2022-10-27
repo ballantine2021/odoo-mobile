@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/theme_primary"
+        android:minHeight="?attr/actionBarSize"
+        android:paddingRight="@dimen/default_8dp"
+        android:paddingTop="@dimen/statusBarHeight"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
+        app:theme="@style/AppBar.Dark"
+        app:titleMarginStart="@dimen/default_16dp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <odoo.controls.OForm
+            android:id="@+id/bankStatementForm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:controlIconTint="@color/theme_secondary"
+            app:autoUIGenerate="true"
+            app:modelName="account.bank.statement">
+
+            <odoo.controls.OField
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/journalId"
+                app:fieldName="journal_id"
+                app:fieldTextAppearance="?android:textAppearanceMedium"
+                app:iconResource="@drawable/ic_action_user"
+                app:iconTint="@color/theme_secondary"
+                app:showLabel="true"
+                app:widgetType="Searchable"
+                app:controlLabel="@string/label_bank_statement_detail_journal"/>
+
+            <View style="@style/ViewSeparator" />
+
+            <odoo.controls.OField
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/date"
+                app:fieldName="date"
+                app:fieldTextAppearance="?android:textAppearanceSmall"
+                app:fieldTextSize="@dimen/text_size_medium"
+                app:parsePattern="MMM dd yyyy"
+                app:iconResource="@drawable/ic_action_time_clock"
+                app:iconTint="@color/theme_secondary"
+                app:controlLabel="@string/label_bank_statement_detail_date"/>
+
+            <View style="@style/ViewSeparator" />
+
+            <odoo.controls.ExpandableListControl
+                android:id="@+id/bankStatementLine"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/default_8dp"
+                android:layout_marginTop="@dimen/default_8dp"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+            </odoo.controls.ExpandableListControl>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|right"
+                    android:padding="@dimen/default_8dp"
+                    android:text="@string/label_sale_detail_total"
+                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/fTotal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@string/font_normal"
+                    android:gravity="center_vertical|right"
+                    android:minWidth="80dp"
+                    android:paddingBottom="@dimen/default_8dp"
+                    android:paddingTop="@dimen/default_8dp"
+                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textColor="@color/body_text_1"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/totalAmount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="@dimen/default_8dp"
+                    android:paddingLeft="@dimen/default_8dp"
+                    android:paddingRight="@dimen/default_16dp"
+                    android:paddingTop="@dimen/default_8dp"
+                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+        </odoo.controls.OForm>
+    </ScrollView>
+</LinearLayout>

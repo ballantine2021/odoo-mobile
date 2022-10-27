@@ -2,6 +2,7 @@ package com.odoo.addons.account;
 
 import android.content.Context;
 
+import com.odoo.addons.sale.SaleOrderLine;
 import com.odoo.core.orm.OModel;
 import com.odoo.core.orm.fields.OColumn;
 import com.odoo.core.orm.fields.types.ODate;
@@ -22,6 +23,7 @@ public class AccountBankStatement extends OModel {
     OColumn state = new OColumn("State", OSelection.class).addSelection("open","New")
             .addSelection("posted","Processing")
             .addSelection("confirm","Validated");
+    OColumn statement_lines = new OColumn("Statement Lines", AccountBankStatementLine.class, OColumn.RelationType.OneToMany).setRelatedColumn("statement_id");
     OColumn currency_symbol = new OColumn("Currency Symbol", OVarchar.class).setLocalColumn();
 
     public AccountBankStatement(Context context, OUser user) {

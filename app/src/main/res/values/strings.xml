@@ -94,4 +94,14 @@
     <string name="statement_state_open">Шинэ</string>
     <string name="statement_state_posted">Нээгдсэн</string>
     <string name="statement_state_confirm">Хаагдсан</string>
+
+    <string name="label_bank_statement_detail_journal">Журнал</string>
+    <string name="label_bank_statement_detail_date">Огноо</string>
+    <string name="label_bank_statement_line_not_partner">Харилцагч олдоогүй</string>
+    <string name="label_bank_statement_line_date">Огноо</string>
+    <string name="label_bank_statement_line_ref">Гүйлгээний утга</string>
+    <string name="label_bank_statement_line_amount">Дүн</string>
+
+    <string name="title_activity_bank_statement">Төлбөрийн жагсаалт</string>
+    <string name="title_activity_bank_statement_regist">Төлбөрийн бүртгэл</string>
 </resources>
