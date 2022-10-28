@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/theme_primary"
+        android:minHeight="?attr/actionBarSize"
+        android:paddingRight="@dimen/default_8dp"
+        android:paddingTop="@dimen/statusBarHeight"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
+        app:theme="@style/AppBar.Dark"
+        app:titleMarginStart="@dimen/default_16dp" />
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ffffff"
+        android:clipToPadding="false"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@android:id/title"
+            android:orientation="vertical"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:paddingBottom="@dimen/default_16dp">
+
+            <odoo.controls.OForm
+                android:id="@+id/paymentForm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_8dp"
+                android:orientation="vertical"
+                app:autoUIGenerate="true"
+                app:modelName="account.bank.statement.line">
+
+                <odoo.controls.OField
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:controlLabel="Огноо"
+                    app:defaultFieldValue="now()"
+                    app:fieldLabelColor="@color/theme_primary"
+                    app:fieldName="date"
+                    app:fieldTextSize="@dimen/text_size_xmedium"
+                    app:showIcon="false"/>
+
+                <View style="@style/ViewSeparator" />
+
+                <odoo.controls.OField
+                    android:id="@+id/journalId"
+                    android:layout_width="match_parent"
+                    android:layout_height="65dp"
+                    app:controlLabel="@string/label_bank_statement_detail_journal"
+                    app:fieldLabelColor="@color/theme_primary"
+                    app:fieldName="journal_id"
+                    app:fieldTextAppearance="?android:textAppearanceSmall"
+                    app:showIcon="false"
+                    app:withBottomPadding="false"/>
+
+                <View style="@style/ViewSeparator" />
+
+                <odoo.controls.OField
+                    android:id="@+id/partnerId"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:controlLabel="@string/label_sale_detail_customer"
+                    app:fieldLabelColor="@color/theme_primary"
+                    app:fieldName="partner_id"
+                    app:widgetType="Searchable"
+                    app:fieldTextSize="@dimen/text_size_xmedium"
+                    app:showIcon="false"/>
+
+                <View style="@style/ViewSeparator" />
+
+                <odoo.controls.OField
+                    android:id="@+id/paymentRef"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:controlLabel="@string/label_bank_statement_line_ref"
+                    app:fieldLabelColor="@color/theme_primary"
+                    app:fieldName="payment_ref"
+                    app:fieldTextSize="@dimen/text_size_xmedium"
+                    app:showIcon="false"/>
+
+            </odoo.controls.OForm>
+
+            <View style="@style/ViewSeparator" />
+
+            <EditText
+                android:id="@+id/account_payment_amount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="-2dp"
+                android:layout_marginRight="-2dp"
+
+                android:hint="@string/label_bank_statement_line_amount"
+                android:inputType="numberDecimal|numberSigned"
+                android:layout_marginTop="32dp"
+                android:textAppearance="?android:textAppearanceMedium" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:layout_gravity="center"
+                android:gravity="right"
+                android:orientation="horizontal">
+                <Button
+                    android:id="@+id/paymentValidate"
+                    android:layout_width="200dp"
+                    android:layout_height="30dp"
+                    android:background="#00A09D"
+                    android:text="Төлбөр батлах"
+                    android:textColor="#FFFFFF" />
+            </LinearLayout>
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+
+</LinearLayout>

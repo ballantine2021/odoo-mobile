@@ -57,6 +57,7 @@
             android:windowSoftInputMode="adjustPan" />
         <activity android:name="com.odoo.core.account.About" />
         <activity android:name="com.odoo.core.account.Profile" />
+        <activity android:name="com.odoo.addons.account.PaymentRegister" />
 
         <!-- Reminder Receivers// -->
         <receiver android:name="com.odoo.core.utils.reminder.ReminderReceiver" />

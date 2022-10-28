@@ -28,6 +28,7 @@ import android.widget.TextView;
 
 import com.odoo.R;
 import com.odoo.SettingsActivity;
+import com.odoo.addons.account.PaymentRegister;
 import com.odoo.config.Addons;
 import com.odoo.core.account.Profile;
 import com.odoo.core.support.addons.OAddon;
@@ -45,6 +46,8 @@ public class DrawerUtils {
 
     public static List<ODrawerItem> getDrawerItems(Context context) {
         List<ODrawerItem> items = new ArrayList<>();
+        items.add(new ODrawerItem("").setTitle(OResource.string(context, R.string.title_activity_bank_statement_regist))
+                .setInstance(PaymentRegister.class).setIcon(R.drawable.ic_action_payment));
         for (OAddon addon : new Addons().getAddons()) {
             IBaseFragment frag = (IBaseFragment) addon.get();
             if (frag != null) {
