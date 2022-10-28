@@ -21,16 +21,6 @@
             android:gravity="center_vertical"
             android:layout_height="wrap_content">
 
-
-            <TextView
-                android:id="@+id/bankStatementLinePartner"
-                android:textSize="@dimen/text_size_large"
-                android:textColor="@color/body_text_1"
-                android:layout_width="wrap_content"
-                android:fontFamily="@string/font_normal"
-                android:singleLine="true"
-                android:layout_height="wrap_content"/>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:orientation="horizontal"
@@ -43,7 +33,7 @@
                     android:layout_width="0dp"
                     android:orientation="vertical"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.25">
+                    android:layout_weight="0.4">
 
                     <TextView
                         android:layout_width="match_parent"
@@ -53,14 +43,14 @@
                         android:fontFamily="@string/font_condensed"
                         android:textColor="@color/body_text_3"
                         android:layout_height="wrap_content"
-                        android:text="@string/label_bank_statement_line_date" />
+                        android:text="@string/label_sale_detail_customer" />
 
                     <TextView
-                        android:id="@+id/bankStatementLineDate"
+                        android:id="@+id/bankStatementLinePartner"
                         android:layout_width="match_parent"
                         android:gravity="left"
                         android:layout_marginRight="@dimen/default_8dp"
-                        android:textColor="@color/body_text_2"
+                        android:textColor="@color/body_text_1"
                         android:layout_height="wrap_content" />
                 </LinearLayout>
 
@@ -68,7 +58,7 @@
                     android:layout_width="0dp"
                     android:orientation="vertical"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.45">
+                    android:layout_weight="0.3">
 
                     <TextView
                         android:layout_width="match_parent"
@@ -86,6 +76,7 @@
                         android:gravity="left"
                         android:layout_marginRight="@dimen/default_8dp"
                         android:textColor="@color/body_text_2"
+                        android:singleLine="true"
                         android:layout_height="wrap_content" />
                 </LinearLayout>
 

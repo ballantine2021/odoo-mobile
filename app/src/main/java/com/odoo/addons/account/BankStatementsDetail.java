@@ -81,7 +81,6 @@ public class BankStatementsDetail extends AppCompatActivity {
                         OControls.setText(mView, R.id.bankStatementLinePartner, partnerList.get(0).getString("name"));
                     else
                         OControls.setText(mView, R.id.bankStatementLinePartner, R.string.label_bank_statement_line_not_partner);
-                    OControls.setText(mView, R.id.bankStatementLineDate, row.getString("date"));
                     OControls.setText(mView, R.id.bankStatementLineRef, row.getString("payment_ref"));
                     OControls.setText(mView, R.id.bankStatementLineAmount,  decimalFormat1.format(row.getFloat("amount")));
                     return mView;

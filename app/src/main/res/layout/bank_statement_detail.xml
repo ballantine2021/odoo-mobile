@@ -36,7 +36,7 @@
                 android:id="@+id/journalId"
                 app:fieldName="journal_id"
                 app:fieldTextAppearance="?android:textAppearanceMedium"
-                app:iconResource="@drawable/ic_action_user"
+                app:iconResource="@drawable/money_transfer"
                 app:iconTint="@color/theme_secondary"
                 app:showLabel="true"
                 app:widgetType="Searchable"
