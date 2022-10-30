@@ -254,6 +254,7 @@ public class PaymentRegister extends AppCompatActivity implements View.OnClickLi
                         }
                     }
                 }
+                paymentValidate.setEnabled(true);
             } catch (JSONException e) {
                 e.printStackTrace();
             }

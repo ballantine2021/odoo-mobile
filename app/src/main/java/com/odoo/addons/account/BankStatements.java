@@ -211,7 +211,7 @@ public class BankStatements extends BaseFragment implements OCursorListAdapter.O
 
                                 if (obj.getJSONArray("statement_lines").length() > 0) {
                                     int statement_id;
-                                    final int COLUMNS_SIZE = 6;
+                                    final int COLUMNS_SIZE = 7;
                                     final int MAX_ROW = 999 / COLUMNS_SIZE;
                                     List<ODataRow> statementList = abs.query("SELECT _id FROM account_bank_statement WHERE id = ?", new String[]{obj.getString("id")});
                                     if(statementList.size() > 0){
@@ -224,7 +224,7 @@ public class BankStatements extends BaseFragment implements OCursorListAdapter.O
                                             counter++;
                                             if (counter == MAX_ROW || statement_line.length() - 1 == l) {
                                                 counter = 0;
-                                                String sql = "INSERT INTO account_bank_statement_line (id, date, payment_ref, partner_id, amount, statement_id) " +
+                                                String sql = "INSERT INTO account_bank_statement_line (id, date, payment_ref, partner_id, amount, journal_id, statement_id) " +
                                                         "VALUES ";
                                                 String[] arguments = new String[]{};
                                                 for (int j = 0; j < tempList.size(); j++) {
@@ -265,7 +265,8 @@ public class BankStatements extends BaseFragment implements OCursorListAdapter.O
                                                     arguments[j * COLUMNS_SIZE + 2] = tempList.get(j).getString("payment_ref");
                                                     arguments[j * COLUMNS_SIZE + 3] = String.valueOf(partner_id);
                                                     arguments[j * COLUMNS_SIZE + 4] = tempList.get(j).getString("amount");
-                                                    arguments[j * COLUMNS_SIZE + 5] = String.valueOf(statement_id);
+                                                    arguments[j * COLUMNS_SIZE + 5] = String.valueOf(journal_id);
+                                                    arguments[j * COLUMNS_SIZE + 6] = String.valueOf(statement_id);
 
                                                     if (j % MAX_ROW == MAX_ROW - 1 || (j == tempList.size() - 1)) {
                                                         absl.query(sql, arguments);

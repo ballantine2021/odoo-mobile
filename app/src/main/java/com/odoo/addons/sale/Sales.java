@@ -331,13 +331,19 @@ public class Sales extends BaseFragment implements OCursorListAdapter.OnViewBind
                 JSONObject jsonObject = new JSONObject(result);
                 if(jsonObject.has("result")){
                     if(jsonObject.getString("result").equals("true")){
-                        OValues oValues1 = new OValues();
-                        oValues1.put("picking_ids", "[]");
-                        so.update(clickedRow.getInt("_id"), oValues);
+                        OValues updateValues = new OValues();
+                        updateValues.put("picking_ids", "[]");
+                        updateValues.put("delivered", "true");
+                        so.update(clickedRow.getInt("_id"), updateValues);
                         getLoaderManager().restartLoader(0,  null, Sales.this);
                         Toast.makeText(getContext(), "Хүргэлт амжилттай баталгаажлаа", Toast.LENGTH_LONG).show();
                     }
                     if(jsonObject.getString("result").equals("done")){
+                        OValues updateValues = new OValues();
+                        updateValues.put("picking_ids", "[]");
+                        updateValues.put("delivered", "true");
+                        so.update(clickedRow.getInt("_id"), updateValues);
+                        getLoaderManager().restartLoader(0,  null, Sales.this);
                         Toast.makeText(getContext(), "Хүргэлт хэдийн баталгаажсан байна", Toast.LENGTH_LONG).show();
                     }
                     if(jsonObject.getString("result").equals("different")){
@@ -445,8 +451,8 @@ public class Sales extends BaseFragment implements OCursorListAdapter.OnViewBind
                                 }
 
                                 so.query("INSERT INTO sale_order (id, name, partner_id, partner_name, date_order, validity_date, state, " +
-                                                "user_id, amount_total, amount_untaxed, amount_tax, currency_id, currency_symbol, picking_ids) " +
-                                                "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                                                "user_id, amount_total, amount_untaxed, amount_tax, currency_id, currency_symbol, picking_ids, delivered) " +
+                                                "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                                         new String[]{obj.getString("id"),
                                                 obj.getString("name"),
                                                 String.valueOf(partner_id),
@@ -460,8 +466,8 @@ public class Sales extends BaseFragment implements OCursorListAdapter.OnViewBind
                                                 obj.getString("amount_tax"),
                                                 String.valueOf(currency_id),
                                                 obj.getString("currency_symbol").equals("null") ? "" : obj.getString("currency_symbol"),
-                                                obj.getString("picking_ids")});
-
+                                                obj.getString("picking_ids"),
+                                                obj.getString("delivered")});
                                 if (obj.getJSONArray("order_line").length() > 0) {
                                     int order_id;
                                     final int COLUMNS_SIZE = 10;
@@ -628,7 +634,11 @@ public class Sales extends BaseFragment implements OCursorListAdapter.OnViewBind
                 OControls.setText(view, R.id.state, R.string.selection_state_cancel);
                 break;
         }
-
+        if(mType == Type.SaleOrder) {
+            if (row.getString("delivered").equals("true")) {
+                OControls.setVisible(view, R.id.delivered);
+            }
+        }
         if(!row.getString("partner_name").equals("false")) {
             OControls.setVisible(view, R.id.partner_name);
             OControls.setText(view, R.id.partner_name, row.getString("partner_name"));

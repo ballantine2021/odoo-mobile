@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.odoo.App;
 import com.odoo.R;
+import com.odoo.addons.account.CustomerPayments;
 import com.odoo.addons.stock.ProductProduct;
 import com.odoo.addons.stock.StockWarehouse;
 import com.odoo.addons.stock.UomUom;
@@ -93,6 +94,7 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
     private DecimalFormat decimalFormat2;
     private final int row_id = OModel.INVALID_ROW_ID;
     private Menu mMenu;
+    private LinearLayout linearLayout;
 
     private enum SyncType {SaveSync, ProductChange}
     private SyncType sType = SyncType.ProductChange;
@@ -169,6 +171,17 @@ public class SalesDetail extends AppCompatActivity implements View.OnClickListen
         currency1.setText(currencySymbol);
         currency2.setText(currencySymbol);
         currency3.setText(currencySymbol);
+        linearLayout = (LinearLayout) findViewById(R.id.payment_details_layout);
+        linearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, CustomerPayments.class);
+                intent.putExtra("partner_id", (Integer) partner_id.getValue());
+                if(((Integer)partner_id.getValue()) != -1) {
+                    startActivityForResult(intent, REQUEST_ADD_ITEMS);
+                }
+            }
+        });
     }
 
     private void onLongClicked(final Integer selProductID) {
