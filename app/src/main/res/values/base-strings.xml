@@ -53,6 +53,7 @@
     <string name="title_working">Боловсруулж байна&#8230;</string>
     <string name="title_sent_to_server">Серверт илгээж байна&#8230;</string>
     <string name="title_please_wait">Түр хүлээнэ үү&#8230;</string>
+    <string name="title_downloading_data">Өгөгдөл татаж байна</string>
     <string name="label_ok">OK</string>
     <string name="label_search">Хайлт</string>
     <string name="label_refresh">Сэргээх</string>

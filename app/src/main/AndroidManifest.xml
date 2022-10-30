@@ -58,6 +58,7 @@
         <activity android:name="com.odoo.core.account.About" />
         <activity android:name="com.odoo.core.account.Profile" />
         <activity android:name="com.odoo.addons.account.PaymentRegister" />
+        <activity android:name="com.odoo.addons.account.CustomerPayments" />
 
         <!-- Reminder Receivers// -->
         <receiver android:name="com.odoo.core.utils.reminder.ReminderReceiver" />
