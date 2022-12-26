@@ -52,6 +52,7 @@ import com.odoo.core.account.OdooUserAskPassword;
 import com.odoo.core.account.OdooUserObjectUpdater;
 import com.odoo.core.auth.OdooAccountManager;
 import com.odoo.core.auth.OdooAuthenticator;
+import com.odoo.core.service.LocationTrack;
 import com.odoo.core.support.OUser;
 import com.odoo.core.support.OdooCompatActivity;
 import com.odoo.core.support.addons.fragment.IBaseFragment;
@@ -119,6 +120,7 @@ public class OdooActivity extends OdooCompatActivity {
         setContentView(R.layout.odoo_activity);
         OAppBarUtils.setAppBar(this, true);
         setupDrawer();
+        new LocationTrack(this, app);
         // Validating user object
         validateUserObject();
     }
