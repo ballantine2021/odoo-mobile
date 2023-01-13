@@ -40,6 +40,7 @@
     <string name="menu_label_action_draft">Үнийн санал болгох</string>
     <string name="menu_label_action_confirm">Борлуулалт батлах</string>
     <string name="menu_label_action_cancel">Цуцлах</string>
+    <string name="menu_label_action_print">Хэвлэх</string>
     <string name="menu_to_draft">Ноороглох</string>
 
     <string name="label_sales_quotation">Үнийн санал</string>
@@ -64,6 +65,7 @@
     <string name="label_sale_detail_taxes">Татвар:</string>
     <string name="label_sale_detail_total">Нийт дүн:</string>
     <string name="label_sale_detail_balance_amount">Төлбөрийн үлдэгдэл:</string>
+    <string name="label_sale_detail_salesman">Борлуулагч:</string>
     <string name="label_sale_order_line_virtual_available">Боломжит тоо</string>
     <string name="label_sale_order_line_quantity">Тоо ширхэг</string>
     <string name="label_sale_order_line_unit_price">Нэгж үнэ</string>
@@ -107,5 +109,14 @@
     <string name="label_balance_amount">Төлбөрийн үлдэгдэл:</string>
     <string name="field_start_date">Эхлэх огноо</string>
     <string name="field_end_date">Дуусах огноо</string>
+
+    <string name="label_receipt_product">Бараа</string>
+    <string name="label_receipt_price_unit">Нэгж үнэ</string>
+    <string name="label_receipt_qty">Тоо ш</string>
+    <string name="label_receipt_subtotal">Дүн</string>
+    <string name="company_name">"Сүлдэн тэнгэр хоршоо"</string>
+    <string name="title_receipt">Хүргэлтийн баримт</string>
+    <string name="footer_receipt_received">Хүлээн авсан: ..............</string>
+    <string name="footer_receipt_delivered">Борлуулагч: ..............</string>
 
 </resources>

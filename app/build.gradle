@@ -37,4 +37,5 @@ dependencies {
 //    implementation project(':intro-slider-lib')
     implementation project(':bottom-sheet-lib')
     implementation project(':calendar-lib')
+    implementation files('libs/btsdk.jar')
 }

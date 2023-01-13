@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    
+
+    <item
+        android:id="@+id/menu_sales_detail_print"
+        android:icon="@drawable/ic_baseline_print_24"
+        android:title="@string/menu_label_action_print" />
     <!--<item-->
     <!--android:id="@+id/menu_print_sale_order"-->
     <!--android:icon="@drawable/abc_ic_menu_paste_mtrl_am_alpha"-->

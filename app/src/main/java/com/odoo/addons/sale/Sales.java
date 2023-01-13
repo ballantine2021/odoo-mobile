@@ -8,10 +8,12 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,7 +34,9 @@ import com.odoo.base.addons.res.ResPartner;
 import com.odoo.base.addons.res.ResUsers;
 import com.odoo.core.orm.ODataRow;
 import com.odoo.core.orm.OModel;
+import com.odoo.core.orm.OO2MRecord;
 import com.odoo.core.orm.OValues;
+import com.odoo.core.orm.fields.OColumn;
 import com.odoo.core.rpc.Odoo;
 import com.odoo.core.rpc.handler.OdooVersionException;
 import com.odoo.core.rpc.helper.OArguments;
@@ -55,6 +59,7 @@ import com.odoo.core.utils.OResource;
 import com.odoo.core.utils.sys.IOnBackPressListener;
 import com.odoo.libs.calendar.SysCal;
 import com.odoo.libs.calendar.view.OdooCalendar;
+import com.printing.BluetoothPrinter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -95,6 +100,7 @@ public class Sales extends BaseFragment implements OCursorListAdapter.OnViewBind
     private enum SyncType {MultiSync, ConfirmSync, CancelSync, DraftSync, PickingSync}
     private SyncType sType = SyncType.MultiSync;
     private ODataRow clickedRow = null;
+    private BluetoothPrinter bp;
 
     public enum Type {
         Quotation,
@@ -167,8 +173,21 @@ public class Sales extends BaseFragment implements OCursorListAdapter.OnViewBind
                 clickedRow = row;
                 checkConnection();
                 break;
+            case R.id.menu_sales_detail_print:
+                printOrder(so.browse(row.getInt(OColumn.ROW_ID)));
+                break;
         }
         var1.dismiss();
+    }
+
+    private void printOrder(ODataRow row) {
+        bp = new BluetoothPrinter(getContext());
+        SystemClock.sleep(5000);
+        Log.d(TAG, "printer is connected");
+        List<ODataRow> order_lines = row.getO2MRecord("order_line").browseEach();
+        bp.PrintSaleOrder(row, order_lines);
+//        SystemClock.sleep(1000);
+//        bp.stopService();
     }
 
     @Override
