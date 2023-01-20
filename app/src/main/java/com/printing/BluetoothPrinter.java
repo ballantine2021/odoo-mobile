@@ -1,67 +1,40 @@
 package com.printing;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.bluetooth.BluetoothDevice;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
-import android.graphics.Rect;
-import android.os.Handler;
-import android.os.Message;
-import android.os.SystemClock;
+import android.util.Base64;
 import android.util.Log;
 
 import com.odoo.R;
 import com.odoo.core.orm.ODataRow;
-import com.zj.btsdk.BluetoothService;
-import com.zj.btsdk.PrintPic;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.List;
-import java.util.Set;
+
 
 public class BluetoothPrinter {
     private static final String TAG = BluetoothPrinter.class.getSimpleName();
-    private static final String FILENAME = "receipt.png";
     private static final int PRODUCT_COL = 5;
-    private static final int PRICE_COL = 350;
-    private static final int QTY_COL = 450;
-    private static final int SUBTOTAL_COL = 550;
-    private static final int CANVAS_WIDTH = 560;
+    private static final int PRICE_COL = 270;
+    private static final int QTY_COL = 340;
+    private static final int SUBTOTAL_COL = 450;
+    private static final int CANVAS_WIDTH = 460;
     private static final int HEIGHT_OFFSET = 470;
-    private int connectionStatus;
-    BluetoothService mService = null;
     Context context;
 
     public BluetoothPrinter(Context context) {
-        mService = new BluetoothService(context, mHandler);
         this.context = context;
 
-        Set<BluetoothDevice> pairedDevices = mService.getPairedDev();
-
-        // If there are paired devices, add each one to the ArrayAdapter
-        if (pairedDevices.size() > 0) {
-            for (BluetoothDevice device : pairedDevices) {
-                if (context.checkSelfPermission(Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED) {
-                    Log.i(TAG,"no permission");
-//                                   return;
-                }
-                Log.i(TAG, device.getName() + " " + device.getAddress());
-            }
-        }
-        BluetoothDevice dev = mService.getDevByMac("0F:03:E0:A0:9B:83");
-        mService.connect(dev);
     }
 
-    public void PrintSaleOrder(ODataRow so, List<ODataRow> order_lines){
+    public String PrintSaleOrder(ODataRow so, List<ODataRow> order_lines){
         Resources resources = this.context.getResources();
+//        mService.sendMessage("Шалгаж байна! өглөө өглүү?","UTF-16");
         float scale = resources.getDisplayMetrics().density;
         int bmp_height = HEIGHT_OFFSET + order_lines.size() * 25;
         Bitmap bitmap = Bitmap.createBitmap(CANVAS_WIDTH, bmp_height, Bitmap.Config.ARGB_8888);
@@ -80,7 +53,7 @@ public class BluetoothPrinter {
 
         Paint titlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         titlePaint.setColor(Color.BLACK);
-        titlePaint.setTextSize((int) (12 * scale));
+        titlePaint.setTextSize((int) (10 * scale));
         titlePaint.setTextAlign(Paint.Align.CENTER);
 
 
@@ -94,12 +67,13 @@ public class BluetoothPrinter {
         canvas.drawText(resources.getString(R.string.label_sale_detail_date) + ": "
                         + so.getString("date_order"),5, y, paint);
         canvas.drawText(resources.getString(R.string.label_sale_detail_number) + ": "
-                       + so.getString("name"), 350, y, paint);
+                       + so.getString("name"), 275, y, paint);
         y += 40;
         canvas.drawText(resources.getString(R.string.label_sale_detail_customer) + ": "
                         + so.getString("partner_name"), 5, y, paint);
+        y += 40;
         canvas.drawText(resources.getString(R.string.label_sale_detail_salesman) + ": "
-                        + salesman, 350, y, paint);
+                        + salesman, 5, y, paint);
         y += 30;
         // text shadow
 //        paint.setShadowLayer(1f, 0f, 1f, Color.WHITE);
@@ -123,7 +97,11 @@ public class BluetoothPrinter {
         for (ODataRow row : order_lines){
             y += 25;
             Log.d(TAG, row.values().toString());
-            canvas.drawText(row.getString("name"), PRODUCT_COL, y, paint);
+            String productName = row.getString("name");
+            if (productName.length() > 12) {
+                productName = productName.substring(0,12);
+            }
+            canvas.drawText(productName, PRODUCT_COL, y, paint);
             canvas.drawText(row.getString("price_unit"), PRICE_COL, y, numPaint);
             canvas.drawText(row.getString("product_uom_qty"), QTY_COL, y, numPaint);
             canvas.drawText(row.getString("price_total"), SUBTOTAL_COL, y, numPaint);
@@ -131,7 +109,7 @@ public class BluetoothPrinter {
         y += 5;
         canvas.drawLine(2, y, CANVAS_WIDTH-10, y, dashedPaint);
         y += 25;
-        canvas.drawText(resources.getString(R.string.label_total_amount), 350, y, paint);
+        canvas.drawText(resources.getString(R.string.label_total_amount), 200, y, paint);
         canvas.drawText(so.getString("amount_total"), SUBTOTAL_COL, y, numPaint);
         y += 40;
         paint.setTextAlign(Paint.Align.CENTER);
@@ -139,69 +117,13 @@ public class BluetoothPrinter {
         y += 50;
         canvas.drawText(resources.getString(R.string.footer_receipt_delivered), CANVAS_WIDTH/2, y, paint);
 
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 50, byteArrayOutputStream); // bm is the bitmap object
+        String strBytes = "<IMAGE>1#"+Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.DEFAULT);
+        return strBytes;
 
-        File path = context.getExternalFilesDir(null);
-        File file = new File(path, FILENAME);
-        try (FileOutputStream out = new FileOutputStream(file)) {
-            boolean res = bitmap.compress(Bitmap.CompressFormat.PNG, 50, out);
-            if (res) {
-                printImage();
-            }
-
-        } catch(Exception e){
-            e.printStackTrace();
-        }
     }
 
 
-    @SuppressLint("SdCardPath")
-    private void printImage() {
-        String path = context.getExternalFilesDir(null).getAbsolutePath() + "/" + FILENAME;
-        byte[] sendData = null;
-        PrintPic pg = new PrintPic();
-        pg.initCanvas(800);
-        pg.initPaint();
-        pg.drawImage(0, 0, path);
-        sendData = pg.printDraw();
-        mService.write(sendData);
-    }
-
-    private final Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case BluetoothService.MESSAGE_STATE_CHANGE:
-                    switch (msg.arg1) {
-                        case BluetoothService.STATE_CONNECTED:   //������
-                            connectionStatus = BluetoothService.STATE_CONNECTED;
-                            Log.i(TAG,"Connect successful");
-                            break;
-                        case BluetoothService.STATE_CONNECTING:  //��������
-                            Log.d(TAG,"connecting");
-                            break;
-                        case BluetoothService.STATE_LISTEN:     //�������ӵĵ���
-                        case BluetoothService.STATE_NONE:
-                            Log.d(TAG,"state none");
-                            break;
-                    }
-                    break;
-                case BluetoothService.MESSAGE_CONNECTION_LOST:    //�����ѶϿ�����
-                    Log.d(TAG,"Device connection was lost");
-                    break;
-                case BluetoothService.MESSAGE_UNABLE_CONNECT:     //�޷������豸
-                    Log.d(TAG,"Unable to connect device");
-                    break;
-            }
-        }
-
-    };
-
-    public boolean isConnected(){
-        return this.connectionStatus == BluetoothService.STATE_CONNECTED;
-    }
-
-    public void stopService() {
-        mService.stop();
-    }
 
 }

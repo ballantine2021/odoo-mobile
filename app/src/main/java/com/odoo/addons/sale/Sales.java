@@ -2,6 +2,7 @@ package com.odoo.addons.sale;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -182,12 +183,16 @@ public class Sales extends BaseFragment implements OCursorListAdapter.OnViewBind
 
     private void printOrder(ODataRow row) {
         bp = new BluetoothPrinter(getContext());
-        SystemClock.sleep(5000);
-        Log.d(TAG, "printer is connected");
+//        SystemClock.sleep(5000);
+//        Log.d(TAG, "printer is connected");
         List<ODataRow> order_lines = row.getO2MRecord("order_line").browseEach();
-        bp.PrintSaleOrder(row, order_lines);
-//        SystemClock.sleep(1000);
-//        bp.stopService();
+        String str = bp.PrintSaleOrder(row, order_lines);
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.setPackage("mate.bluetoothprint");
+        sendIntent.putExtra(Intent.EXTRA_TEXT, str);
+        sendIntent.setType("text/plain");
+        startActivity(sendIntent);
     }
 
     @Override
