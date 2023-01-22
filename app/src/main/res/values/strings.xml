@@ -52,7 +52,7 @@
     <string name="label_product_available_qty">Гарт байгаа тоо</string>
     <string name="other_brand_name">Бусад</string>
 
-    <string name="label_sale_detail_number">Дугаар</string>
+    <string name="label_sale_detail_number">№</string>
     <string name="label_sale_detail_customer">Харилцагч</string>
     <string name="label_sale_detail_date">Огноо</string>
     <string name="label_sale_detail_payment_term">Төлбөрийн нөхцөл</string>

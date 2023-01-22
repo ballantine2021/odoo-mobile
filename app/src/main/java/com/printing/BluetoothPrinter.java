@@ -24,7 +24,7 @@ public class BluetoothPrinter {
     private static final int QTY_COL = 340;
     private static final int SUBTOTAL_COL = 450;
     private static final int CANVAS_WIDTH = 460;
-    private static final int HEIGHT_OFFSET = 470;
+    private static final int HEIGHT_OFFSET = 480;
     Context context;
 
     public BluetoothPrinter(Context context) {
@@ -36,7 +36,7 @@ public class BluetoothPrinter {
         Resources resources = this.context.getResources();
 //        mService.sendMessage("Шалгаж байна! өглөө өглүү?","UTF-16");
         float scale = resources.getDisplayMetrics().density;
-        int bmp_height = HEIGHT_OFFSET + order_lines.size() * 25;
+        int bmp_height = HEIGHT_OFFSET + order_lines.size() * 35;
         Bitmap bitmap = Bitmap.createBitmap(CANVAS_WIDTH, bmp_height, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
 
@@ -44,16 +44,16 @@ public class BluetoothPrinter {
         // text color - #3D3D3D
         paint.setColor(Color.BLACK);
         // text size in pixels
-        paint.setTextSize((int) (8 * scale));
+        paint.setTextSize((int) (23));
 
         Paint numPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         numPaint.setColor(Color.BLACK);
-        numPaint.setTextSize((int) (8 * scale));
+        numPaint.setTextSize((int) (23));
         numPaint.setTextAlign(Paint.Align.RIGHT);
 
         Paint titlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         titlePaint.setColor(Color.BLACK);
-        titlePaint.setTextSize((int) (10 * scale));
+        titlePaint.setTextSize((int) (26));
         titlePaint.setTextAlign(Paint.Align.CENTER);
 
 
@@ -67,7 +67,7 @@ public class BluetoothPrinter {
         canvas.drawText(resources.getString(R.string.label_sale_detail_date) + ": "
                         + so.getString("date_order"),5, y, paint);
         canvas.drawText(resources.getString(R.string.label_sale_detail_number) + ": "
-                       + so.getString("name"), 275, y, paint);
+                       + so.getString("name"), 300, y, paint);
         y += 40;
         canvas.drawText(resources.getString(R.string.label_sale_detail_customer) + ": "
                         + so.getString("partner_name"), 5, y, paint);
@@ -84,34 +84,38 @@ public class BluetoothPrinter {
 
         canvas.drawLine(2, y, CANVAS_WIDTH-10, y, dashedPaint);
 
-        y += 22;
+        y += 25;
 //        paint.setTextAlign(Paint.Align.CENTER);
         canvas.drawText(resources.getString(R.string.label_receipt_product), PRODUCT_COL, y, paint);
         canvas.drawText(resources.getString(R.string.label_receipt_price_unit), PRICE_COL, y, numPaint);
         canvas.drawText(resources.getString(R.string.label_receipt_qty), QTY_COL, y, numPaint);
         canvas.drawText(resources.getString(R.string.label_receipt_subtotal), SUBTOTAL_COL, y, numPaint);
 
-        y += 5;
+
+        y += 8;
         canvas.drawLine(2, y, CANVAS_WIDTH-10, y, dashedPaint);
 
         for (ODataRow row : order_lines){
-            y += 25;
-            Log.d(TAG, row.values().toString());
+            y += 35;
             String productName = row.getString("name");
-            if (productName.length() > 12) {
+            if (productName.length() > 15) {
                 productName = productName.substring(0,12);
             }
             canvas.drawText(productName, PRODUCT_COL, y, paint);
-            canvas.drawText(row.getString("price_unit"), PRICE_COL, y, numPaint);
-            canvas.drawText(row.getString("product_uom_qty"), QTY_COL, y, numPaint);
-            canvas.drawText(row.getString("price_total"), SUBTOTAL_COL, y, numPaint);
+            int priceUnit = row.getFloat("price_unit").intValue();
+            int qty = row.getFloat("product_uom_qty").intValue();
+            int subtotal = row.getFloat("price_total").intValue();
+            canvas.drawText(String.format("%,d", priceUnit), PRICE_COL, y, numPaint);
+            canvas.drawText(String.valueOf(qty), QTY_COL, y, numPaint);
+            canvas.drawText(String.format("%,d", subtotal), SUBTOTAL_COL, y, numPaint);
         }
         y += 5;
         canvas.drawLine(2, y, CANVAS_WIDTH-10, y, dashedPaint);
-        y += 25;
+        y += 30;
         canvas.drawText(resources.getString(R.string.label_total_amount), 200, y, paint);
-        canvas.drawText(so.getString("amount_total"), SUBTOTAL_COL, y, numPaint);
-        y += 40;
+        int total = so.getFloat("amount_total").intValue();
+        canvas.drawText(String.format("%,d",total), SUBTOTAL_COL, y, numPaint);
+        y += 60;
         paint.setTextAlign(Paint.Align.CENTER);
         canvas.drawText(resources.getString(R.string.footer_receipt_received), CANVAS_WIDTH/2, y, paint);
         y += 50;
