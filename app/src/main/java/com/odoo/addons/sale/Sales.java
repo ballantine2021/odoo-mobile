@@ -175,18 +175,30 @@ public class Sales extends BaseFragment implements OCursorListAdapter.OnViewBind
                 checkConnection();
                 break;
             case R.id.menu_sales_detail_print:
+                printTitle();
+                SystemClock.sleep(2000);
                 printOrder(so.browse(row.getInt(OColumn.ROW_ID)));
                 break;
         }
         var1.dismiss();
     }
 
+    private void printTitle() {
+        bp = new BluetoothPrinter(getContext());
+        String str = bp.PrintSOTitle();
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.setPackage("mate.bluetoothprint");
+        sendIntent.putExtra(Intent.EXTRA_TEXT, str);
+        sendIntent.setType("text/plain");
+        startActivity(sendIntent);
+    }
+
     private void printOrder(ODataRow row) {
         bp = new BluetoothPrinter(getContext());
-//        SystemClock.sleep(5000);
-//        Log.d(TAG, "printer is connected");
         List<ODataRow> order_lines = row.getO2MRecord("order_line").browseEach();
-        String str = bp.PrintSaleOrder(row, order_lines);
+        String str = bp.PrintSaleOrder(row, order_lines, user().getUserId());
+//        bp.PrintSaleOrder(row, order_lines, user().getUserId());
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
         sendIntent.setPackage("mate.bluetoothprint");

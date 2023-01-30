@@ -112,11 +112,13 @@
 
     <string name="label_receipt_product">Бараа</string>
     <string name="label_receipt_price_unit">Нэгж үнэ</string>
-    <string name="label_receipt_qty">Тоо ш</string>
+    <string name="label_receipt_qty">Тоо</string>
     <string name="label_receipt_subtotal">Дүн</string>
     <string name="company_name">"Сүлдэн тэнгэр хоршоо"</string>
-    <string name="title_receipt">Хүргэлтийн баримт</string>
-    <string name="footer_receipt_received">Хүлээн авсан: ..............</string>
-    <string name="footer_receipt_delivered">Борлуулагч: ..............</string>
+    <string name="label_receipt_address">Хаяг: Баянхонгор аймаг</string>
+    <string name="title_receipt">Зарлагын баримт</string>
+    <string name="label_text_bank_account">Дансны дугаар:</string>
+    <string name="footer_receipt_received">Хүлээн авсан: (Гарын үсэг)</string>
+    <string name="footer_receipt_delivered">Хүлээлгэн өгсөн: </string>
 
 </resources>
